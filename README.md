@@ -38,6 +38,15 @@ If a product is out of season, the price and quantity must be the same as last m
 
 The price change of a single item may not influence the change in the mean prices by more than 10\%, upwards or downwards.
 
+Explanation in detail: let `m(t)` be the mean at time `t` and `m(t-1)` the mean time at time `t-1`.
+The change in mean prices is given by `d(t,t-1) = abs(m(t) - m(t-1))`. Also define `m(t,i)`, which is the
+mean price at time `t`, but the price of the `i`th item is set equal to the price at time `t-1`. Accordingly, we write `d(t,t-1,i) = abs(m(t,i)-m(t-1))`. The rule now states that
+```
+0.9 <= d(t,t-1,i)/d(t,t-1) <= 1.1
+```
+
+
+
 ##### Rule 8
 
 Year of birth in household questionnaire must equal year of birth in individual questionnaire
