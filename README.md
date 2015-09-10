@@ -82,10 +82,12 @@ forall x:
 
 ##### Rule 13
 
-The combination of sex and age group in the data set is
-unique, i.e., there do not exist two distinct records in
-the data set with an identical combination of values for
-sex and age group.
+The combination of sex and age group in the data set is unique, i.e., there do not exist two distinct records in
+the data set with an identical combination of values for sex and age group.
+
+- sex groups: `male`, `female`
+- age groups: `child`, `adult`, `senior` 
+
 
 ##### Rule 14
 
