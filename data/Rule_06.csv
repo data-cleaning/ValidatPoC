@@ -1,0 +1,8 @@
+season,F,price_t,quantity_t,price_t-1,quantity_t-1,expected
+1,10,18,5,16,5,"valid"
+0,1,12,5,12,5,"valid"
+0,10,12,5,12,5,"invalid"
+0,1,12,5,11,5,"invalid"
+0,1,12,5,12,6,"invalid"
+0,,12,5,12,6,"undecided"
+0,0,,5,12,6,"invalid"
