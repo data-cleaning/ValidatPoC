@@ -1,0 +1,5 @@
+cost,profit,turnover,expected
+24,48,72,"valid"
+13,50,64,"invalid"
+5,-10,-5,"valid"
+,10,11,"undecided"
