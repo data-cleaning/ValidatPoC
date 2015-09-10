@@ -31,18 +31,82 @@ Price change between current month and the same month last year does not exceed 
 Age of grandparents – 28 >= age of their grandchildren
 
 ##### Rule 6
-_If product is out of season (=0), then variable F = 1 and then entry of the current month (prices, quantity) has to be equal to the entry of last month (no change is allowed)_
 
-Symbolic:
-```
-if ( in_season == 0 ) price_t == price_tm1
-```
+If a product is out of season, the price must be the same as last month's.
 
 ##### Rule 7
 
 The price change of a single item may not influence the change in the mean prices by more than 10\%, upwards or downwards.
 
+##### Rule 8
 
+Year of birth in household questionnaire must equal year of birth in individual questionnaire
+
+##### Rule 9
+
+```
+forall x: x.age >= 0 AND x.age <= 113
+```
+
+##### Rule 10
+
+```
+exists x: x.business-id = 100 AND x.turnover > 1.000.000
+```
+
+##### Rule 11
+
+```
+exists! x: x.business-id = 100 AND x.turnover > 1.000.000
+```
+
+##### Rule 12
+
+```
+forall x: 
+  IF x.relation_to_head = 4 
+  THEN exists y:
+    x.spouse-id = y.person-id AND y.relation_to_head = 3
+```
+
+##### Rule 13
+
+The combination of sex and age group in the data set is
+unique, i.e., there do not exist two distinct records in
+the data set with an identical combination of values for
+sex and age group.
+
+##### Rule 14
+
+Every combination of sex and age group occurs at least once in the data set.
+
+##### Rule 15
+
+If two records have the same postal code, they must have the same value for `city`. Below, this is expressed
+as a [functional dependency](https://en.wikipedia.org/wiki/Functional_dependency)
+
+```
+postal_code --> city
+```
+##### Rule 16
+
+```
+forall k >= 1: w(x1. ... .xk) equals the sum of
+w(x1. ... .xk.i) forall i >= 0
+```
+
+##### Rule 17
+
+The value for no_of_household_members must equal the number of records for each household
+
+##### Rule 18
+
+```
+forall x: forall n:
+  IF 1 <= n <= x.no_of_household_members
+  THEN exists y: 
+    x.household-id = y.household-id AND y.person-id = n
+```
 
 
 
