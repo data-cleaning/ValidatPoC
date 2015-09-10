@@ -117,6 +117,8 @@ w(x1. ... .xk.i) forall i >= 0
 The value for no_of_household_members must equal the number of records for each household
 
 ##### Rule 18
+This last one is a bit complicated. It involves two files, one with households (`x`) and one with persons data (`y`). In the household file, it is registered how many members there are, say 3. It is then expected that
+there are persons with `person-id` 1,2,3 in the file `y`. The rule is satisfied if for all households, all person-id's can be found, and the id's have the correct values.
 
 ```
 forall x: forall n:
