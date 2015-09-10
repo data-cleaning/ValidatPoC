@@ -105,6 +105,8 @@ postal_code --> city
 ```
 ##### Rule 16
 
+The following is a check on hierarchical aggreggation.
+
 ```
 forall k >= 1: w(x1. ... .xk) equals the sum of
 w(x1. ... .xk.i) forall i >= 0
