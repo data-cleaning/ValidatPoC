@@ -10,16 +10,10 @@ Below are descriptions of rules considered in the PoC. For implementation in the
 
 Number of hours per week usually worked should be between 1 and 80
 
-```
-hours_worked > 1
-hours_worked < 80
-```
 
 ##### Rule 2
 
-```
-cost + profit == turnover
-```
+cost + profit = turnover
 
 ##### Rule 3
 
