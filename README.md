@@ -1,10 +1,7 @@
 # ValidatPoC
 Rules and data for the PoC of the [ESSnet on Validation](http://www.cros-portal.eu/content/validat-foundation)
 
-**Getting the data**
-
-- [Download](https://github.com/data-cleaning/ValidatPoC/archive/master.zip) the zipfile.
-- If you're a git user, clone or fork this repository. 
+- **Getting the data**: [Download](https://github.com/data-cleaning/ValidatPoC/archive/master.zip) .zip.
 
 ## The Rules
 Below are descriptions of rules considered in the PoC. For implementation in the validation language of choice, translation is probably necessary. For each rule, there are one or more data sets in the `data` directory.
