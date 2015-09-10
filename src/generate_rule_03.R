@@ -6,5 +6,5 @@ out <- data.frame(
  , level3 = sample(c("high","medium","low",NA), size=1000, replace=TRUE, prob=rep(0.25,4))
 )
 
-write.csv(out,file="Rule_03.csv")
+write.csv(out,file="data/Rule_03.csv")
 
