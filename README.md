@@ -1,7 +1,7 @@
 # ValidatPoC
 Rules and data for the PoC of the [ESSnet on Validation](http://www.cros-portal.eu/content/validat-foundation)
 
-Below are descriptions of rules considered in the PoC. For implementation in the validation language of choice, translation is probably necessary. For each rule, there is one or more data sets in the `data` directory.
+Below are descriptions of rules considered in the PoC. For implementation in the validation language of choice, translation is probably necessary. For each rule, there are one or more data sets in the `data` directory.
 
 ##### Rule 1
 
@@ -24,7 +24,7 @@ Check whether the relative occurrence of the category `high` in a column contain
 
 ##### Rule 4
 
-Price change between current month and the same month last year does not exceed 50% (taking the previous value as 100%)
+Price change between the current month and the previous month should not exceed 50% (taking the previous value as 100%). The same must hold for the price change between the current month and the same month last year.
 
 ##### Rule 5
 
