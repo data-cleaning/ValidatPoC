@@ -65,6 +65,8 @@ exists x: x.business-id = 100 AND x.turnover > 1.000.000
 
 ##### Rule 11
 
+The `exists!` operator means 'there exists exactly one'.
+
 ```
 exists! x: x.business-id = 100 AND x.turnover > 1.000.000
 ```
