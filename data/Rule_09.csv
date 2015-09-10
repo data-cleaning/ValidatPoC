@@ -1,5 +1,0 @@
-age,expected
--30,"invalid"
-29,"valid"
-120,"invalid"
-,"undecided"
