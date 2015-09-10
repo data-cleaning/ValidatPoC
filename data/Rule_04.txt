@@ -1,0 +1,5 @@
+price_t;price_t-1;price_Y-1;expected
+15;13;11;"valid"
+50;20;40;"invalid"
+50;40;10;"invalid"
+60;;50;"undecided"
