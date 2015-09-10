@@ -1,4 +1,4 @@
-hours_worked;expected
-32;"valid"
-86;"Invalid"
-;"Undecided"
+hours_worked,expected
+32,"valid"
+86,"Invalid"
+,"Undecided"
