@@ -1,6 +1,17 @@
 # ValidatPoC
 Rules and data for the PoC of the [ESSnet on Validation](http://www.cros-portal.eu/content/validat-foundation)
 
+## Getting the data
+
+- Install a git client. 
+    - Windows: use [msysgit](https://github.com/msysgit/msysgit/releases)
+    - Ubuntu: type `sudo apt-get install git` on the command terminal.
+- Clone this repository.
+    - Windows: start the git bash programme and type `git clone https://github.com/data-cleaning/ValidatPoC.git`
+    - Ubuntu: start a command terminal and type `git clone https://github.com/data-cleaning/ValidatPoC.git`
+
+
+## The Rules
 Below are descriptions of rules considered in the PoC. For implementation in the validation language of choice, translation is probably necessary. For each rule, there are one or more data sets in the `data` directory.
 
 ##### Rule 1
