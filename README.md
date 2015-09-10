@@ -53,6 +53,8 @@ Year of birth in household questionnaire must equal year of birth in individual 
 
 ##### Rule 9
 
+The `forall` quantifyer signifies that the rule is satisfied for a data set when _all_ records satisfy the rule.
+
 ```
 forall x: x.age >= 0 AND x.age <= 113
 ```
@@ -65,7 +67,7 @@ exists x: x.business-id = 100 AND x.turnover > 1.000.000
 
 ##### Rule 11
 
-The `exists!` operator means 'there exists exactly one'.
+The `exists!` quantifier signifies 'there exists exactly one'.
 
 ```
 exists! x: x.business-id = 100 AND x.turnover > 1.000.000
