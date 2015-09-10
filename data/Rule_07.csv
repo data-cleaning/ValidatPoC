@@ -1,0 +1,5 @@
+"price_t","price_tm1","expected"
+15.5,16.99,"invalid"
+17.3,18,"valid"
+12.5,20,"invalid"
+11.99,12.5,"valid"
