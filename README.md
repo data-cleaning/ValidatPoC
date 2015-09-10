@@ -80,6 +80,9 @@ sex and age group.
 
 Every combination of sex and age group occurs at least once in the data set.
 
+- sex groups: `male`, `female`
+- age groups: `child`, `adult`, `senior` 
+
 ##### Rule 15
 
 If two records have the same postal code, they must have the same value for `city`. Below, this is expressed
