@@ -8,8 +8,8 @@ Below are descriptions of rules considered in the PoC. For implementation in the
 Number of hours per week usually worked should be between 1 and 80
 
 ```
-hours_worked >= 1
-hours_worked <= 80
+hours_worked > 1
+hours_worked < 80
 ```
 
 ##### Rule 2
@@ -32,7 +32,7 @@ Age of grandparents – 28 >= age of their grandchildren
 
 ##### Rule 6
 
-If a product is out of season, the price must be the same as last month's.
+If a product is out of season, the price and quantity must be the same as last month's values.
 
 ##### Rule 7
 
