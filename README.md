@@ -5,7 +5,7 @@ Rules and data for the PoC of the [ESSnet on Validation](http://www.cros-portal.
 - **Viewing the data**: Browse the [data](https://github.com/data-cleaning/ValidatPoC/tree/master/data) directory. This directory contains data in csv format. For some files, there is an extra description in a `.md` file. This is just a textfile; the [markdown](http://daringfireball.net/projects/markdown/) format ensures that it gets formatted by github (as well as being a human-readable text file).
 
 ## The Rules
-Below are descriptions of rules considered in the PoC. For implementation in the validation language of choice, translation is probably necessary. For each rule, there are one or more data sets in the `data` directory.
+Below are descriptions of all the rules considered in the PoC. For implementation in the validation language of choice, translation is probably necessary. For each rule, there are one or more data sets in the `data` directory.
 
 ##### Rule 1
 
