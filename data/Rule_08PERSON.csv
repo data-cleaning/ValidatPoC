@@ -1,7 +1,7 @@
-"person","year_of_birth","gender"
-"Ernie",1965,"male"
-"Bert",1967,"male"
-"Elmo",1997,"male"
-"Kermit",1974,"male"
-"Rosita",,"female"
-"Grover",2001,
+"person-id","person","year_of_birth","gender"
+1,"Ernie",1965,"male"
+2,"Bert",1967,"male"
+3,"Elmo",1997,"male"
+4,"Kermit",1974,"male"
+5,"Rosita",,"female"
+6,"Grover",2001,
