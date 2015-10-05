@@ -1,0 +1,6 @@
+DS= id, age, grandchild_of 
+ 
+DSr:= (DS#age-28) >= DS#grandchild_of
+
+/* if a NULL value is in one of the terms of the AND the result will be as indicated in 3VL, Three-valued logic
+   see page 42 VTL-part1 */
