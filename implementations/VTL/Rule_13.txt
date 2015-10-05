@@ -1,0 +1,3 @@
+DScalc := DS[calc 1 as "id" role "identifier", 1 as "msrcount" role "measure"]
+DScount := DS[keep(id, msrcount, gender, age_groups)][aggregate count(msrcount)][filter msrcount > 1]
+DSr := DScount [keep (id, msrcount)][aggregate count(msrcount)] = 0
