@@ -1,0 +1,3 @@
+DS= business-id, cost, profit, turnover 
+
+DSr:= (DS#cost + DS#profit) = DS#turnover
