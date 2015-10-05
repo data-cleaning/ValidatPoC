@@ -1,0 +1,6 @@
+DScalc:= DS[calc   1   as   "temp_id"   role   "identifier"][keep (temp_id, price_t , price_mt1)]
+DSm(t):= DScalc [keep (temp_id,price_t)][aggregate avg(price_t)]
+DSm(t-1):= DScalc [keep (temp_id,price_mt1)][aggregate avg(price_mt1)]
+DSr:=(abs(DSm(t)- DSm(t-1))/abs(DSm(t)- DScalc#price_t  + DScalc#price_mt1 - DSm(t-1))) between 0.9 and 1.1
+
+/* the Dataset must be checked in advance if there are NULL fields in columns price_t  or price_mt1 */
