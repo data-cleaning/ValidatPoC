@@ -1,4 +1,0 @@
-DSnot_cond:=DS[filter age<0 or age >113]
-DSr:=DSnot_cond[calc msr_count=1 as "msr_count", temp_id 1 as identifier][keep (temp_id,msr_count)][aggregate count(include NULL msr_count)]=0
-
-/* the Dataset must be checked in advance if there are NULL values in column age */
