@@ -1,5 +1,0 @@
-DS=id, item, price_t, price_t-1, price_Y-1 
-
-DSr1:= ((DS#price_t - DS#price_t-1) <= (DS#price_t-1 * 0.5))  and  ((DS#price_t + DS#price_Y-1) <= (DS#price_Y-1 * 0.5))
-
-/* if a NULL value is in one of the terms of the AND the result will be as indicated in 3VL, Three-valued logic  see page 42 VTL-part1 */
