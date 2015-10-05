@@ -1,9 +1,0 @@
-DS=id, level1,level2,level3 
-
-DScalc:= DS[calc   1   as   "temp_id"   role   "identifier"]
-DStot:= DScalc [keep (temp_id,id)][aggregate count (id)]
-DSr:= DScalc[keep (temp_id,level1)][filter level1="high"][aggregate count(level1)]<(DStot*0.1) and
- DScalc[keep (temp_id,level2)][filter level2="high"][aggregate count(level2)]<(DStot*0.1)  and
- DScalc[keep (temp_id,level3)][filter level3="high"][aggregate count(level3)]<(DStot*0.1)
-
-/* the Dataset must be checked in advance if there are NULL values in columns level1, level2 or level3 */
