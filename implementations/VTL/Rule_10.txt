@@ -1,0 +1,5 @@
+DScalc:= DS[calc   1   as   "temp_id"    role    "identifier "] 
+DScond:= DScalc[filter  business_id=100 and turnover>1000000] 
+DSr:= DScond[keep  (id,business_id)][aggregate  count  (business_id)] > 0
+
+/* the Dataset must be checked in advance if there are NULL values in column business_id or turnover */
