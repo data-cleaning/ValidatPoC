@@ -1,0 +1,15 @@
+/*
+ * Create a hierarchy (actually is no possible to do using VTL because some string operators are missing)
+ *
+ *  MAPS FROM	   MAPS TO	LEVEL	   SIGN
+ *  x1                      1	      +
+ *  x1.1          x1	      2	      +
+ *  x1.2          x1	      2	      +
+ *  x1.3          x1	      2	      +
+ *  x2                      1       +
+ *  x2.1          x2	      2	      +
+ */
+
+DShierarchy := hierarchy(DS, level, "HRC", false)
+DScond := (DShierarchy = DS)[filter weight = "false"]
+DSr := DScond[calc 1 as "msrcount" role "MEASURE"][aggregate count(msrcount)] = 0
