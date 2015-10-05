@@ -1,0 +1,10 @@
+DSfilter := DS[filter relation_to_head = 4]
+DSmerge := merge(DS "DSx",DS "DSy",
+    on
+    (DSy#spouse-id = DSx#person-id and DSy#relation_to_head = 3 and DSx#relation_to_head = 4)
+    return
+    (DSx#person-id as "person-id"))
+
+DSnot_exists := DSfilter not_exists_in DSmerge
+
+DScount := DSnot_exists[calc 1 as "id" role "identifier"][keep (id, person_id)][aggregate count (person_id)]
