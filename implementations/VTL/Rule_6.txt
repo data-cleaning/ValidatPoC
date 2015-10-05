@@ -1,5 +1,3 @@
-/* If a product is out of season, the price and quantity must be the same as last month's values. */
-
 DS= product_id, season, price_t, quantity_t, price_t-1, quantity_t-1 
 
 DSout:=DS[filter season="out"]
