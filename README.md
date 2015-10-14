@@ -170,3 +170,5 @@ forall x: forall n:
 See [this file](https://github.com/data-cleaning/ValidatPoC/blob/master/data/Rule_18_expected.md) for explanation
 and expected results.
 
+We assume all data is available.
+
