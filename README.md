@@ -57,6 +57,7 @@ mean price at time `t`, but the price of the `i`th item is set equal to the pric
 0.9 <= d(t,t-1,i)/d(t,t-1) <= 1.1
 ```
 
+We assume all data is available.
 
 ##### Rule 8
 
@@ -81,6 +82,8 @@ Missing values result in undecided.
 ```
 exists x: x.business-id = 100 AND x.turnover > 1.000.000
 ```
+
+We assume all data is available.
 
 ##### Rule 11
 
