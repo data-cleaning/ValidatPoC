@@ -86,11 +86,13 @@ exists x: x.business-id = 100 AND x.turnover > 1.000.000
 
 The `exists!` quantifier signifies 'there exists exactly one'.
 
+
 ```
 exists! x: x.business-id = 100 AND x.turnover > 1.000.000
 ```
 
-Missing values result in undecided.
+A missing value resuls in undecided, except when the truth value can be determined regardless of the missing value.
+
 
 ##### Rule 12
 
@@ -101,6 +103,8 @@ forall x:
     x.spouse-id = y.person-id AND y.relation_to_head = 3
 ```
 
+We assume all data is available.
+
 ##### Rule 13
 
 The combination of sex and age group in the data set is unique, i.e., there do not exist two distinct records in
@@ -109,6 +113,7 @@ the data set with an identical combination of values for sex and age group.
 - sex groups: `male`, `female`
 - age groups: `child`, `adult`, `senior` 
 
+We assume all data is available.
 
 ##### Rule 14
 
@@ -116,6 +121,8 @@ Every combination of sex and age group occurs at least once in the data set.
 
 - sex groups: `male`, `female`
 - age groups: `child`, `adult`, `senior` 
+
+We assume all data is available.
 
 ##### Rule 15
 
@@ -125,6 +132,10 @@ as a [functional dependency](https://en.wikipedia.org/wiki/Functional_dependency
 ```
 postal_code --> city
 ```
+
+See [this file](https://github.com/data-cleaning/ValidatPoC/blob/master/data/Rule_15_expected.md) for the expected conflicts and how to handle missing cases.
+
+
 ##### Rule 16
 
 The following is a check on hierarchical aggreggation.
@@ -134,13 +145,20 @@ forall k >= 1: w(x1. ... .xk) equals the sum of
 w(x1. ... .xk.i) forall i >= 0
 ```
 
+We assume all data is available.
+
+
 ##### Rule 17
 
 The value for no_of_household_members must equal the number of records for each household
 
+See also [this file](https://github.com/data-cleaning/ValidatPoC/blob/master/data/Rule_17_expected.md) for a short explanation of the data files.
+
 ##### Rule 18
+
 This last one is a bit complicated. It involves two files, one with households (`x`) and one with persons data (`y`). In the household file, it is registered how many members there are, say 3. It is then expected that
 there are persons with `person-id` 1,2,3 in the file `y`. The rule is satisfied if for all households, all person-id's can be found, and the id's have the correct values.
+
 
 ```
 forall x: forall n:
@@ -148,3 +166,7 @@ forall x: forall n:
   THEN exists y: 
     x.household-id = y.household-id AND y.person-id = n
 ```
+
+See [this file](https://github.com/data-cleaning/ValidatPoC/blob/master/data/Rule_18_expected.md) for explanation
+and expected results.
+
