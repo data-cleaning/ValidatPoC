@@ -37,12 +37,14 @@ Missing values result in invalid
 
 Age of grandparents – 28 >= age of their grandchildren
 
-Missing values result in 
+Missing values result in undecided. Results are reported per grandchild.
 
 
 ##### Rule 6
 
 If a product is out of season, the price and quantity must be the same as last month's values.
+
+Missing values result in undecided.
 
 ##### Rule 7
 
@@ -56,10 +58,12 @@ mean price at time `t`, but the price of the `i`th item is set equal to the pric
 ```
 
 
-
 ##### Rule 8
 
 Year of birth in household questionnaire must equal year of birth in individual questionnaire
+
+- Missing values result in undecided.
+- Results are reported per person.
 
 ##### Rule 9
 
