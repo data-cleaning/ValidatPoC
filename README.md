@@ -86,11 +86,13 @@ exists x: x.business-id = 100 AND x.turnover > 1.000.000
 
 The `exists!` quantifier signifies 'there exists exactly one'.
 
+
 ```
 exists! x: x.business-id = 100 AND x.turnover > 1.000.000
 ```
 
-Missing values result in undecided.
+A missing value resuls in undecided, except when the truth value can be determined regardless of the missing value.
+
 
 ##### Rule 12
 
@@ -101,6 +103,8 @@ forall x:
     x.spouse-id = y.person-id AND y.relation_to_head = 3
 ```
 
+We assume all data is available.
+
 ##### Rule 13
 
 The combination of sex and age group in the data set is unique, i.e., there do not exist two distinct records in
@@ -109,6 +113,7 @@ the data set with an identical combination of values for sex and age group.
 - sex groups: `male`, `female`
 - age groups: `child`, `adult`, `senior` 
 
+We assume all data is available.
 
 ##### Rule 14
 
@@ -116,6 +121,8 @@ Every combination of sex and age group occurs at least once in the data set.
 
 - sex groups: `male`, `female`
 - age groups: `child`, `adult`, `senior` 
+
+We assume all data is available.
 
 ##### Rule 15
 
@@ -125,6 +132,10 @@ as a [functional dependency](https://en.wikipedia.org/wiki/Functional_dependency
 ```
 postal_code --> city
 ```
+
+See [this file](https://github.com/data-cleaning/ValidatPoC/blob/master/data/Rule_15_expected.md) for the expected conflicts.
+
+
 ##### Rule 16
 
 The following is a check on hierarchical aggreggation.
@@ -133,6 +144,7 @@ The following is a check on hierarchical aggreggation.
 forall k >= 1: w(x1. ... .xk) equals the sum of
 w(x1. ... .xk.i) forall i >= 0
 ```
+
 
 ##### Rule 17
 
