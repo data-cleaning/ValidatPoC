@@ -1,7 +1,7 @@
-"household-id","person","year_of_birth","expected"
-1,"Ernie",1965,"valid"
-1,"Bert",1966,"invalid"
-1,"Elmo",1997,"valid"
-2,"Kermit",1974,"valid"
-2,"Rosita",1977,"undecided"
-2,"Grover",2000,"invalid"
+"household-id","person","year_of_birth"
+1,"Ernie",1965
+1,"Bert",1966
+1,"Elmo",1997
+2,"Kermit",1974
+2,"Rosita",1977
+2,"Grover",2000
