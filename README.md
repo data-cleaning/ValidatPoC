@@ -11,22 +11,34 @@ Below are descriptions of all the rules considered in the PoC. For implementatio
 
 Number of hours per week usually worked should be between 1 and 80
 
+Missing data results in undecided.
 
 ##### Rule 2
 
 cost + profit = turnover
 
+Missing data results in undecided
+
+
 ##### Rule 3
 
 Check whether the relative occurrence of the category `high` in a column containing values `low`, `high`, `medium` does not exceed 10%.
+
+Missing values are ignored when determining the relative occurrences.
 
 ##### Rule 4
 
 Price change between the current month and the previous month should not exceed 50% (taking the previous value as 100%). The same must hold for the price change between the current month and the same month last year.
 
+Missing values result in invalid
+
+
 ##### Rule 5
 
 Age of grandparents – 28 >= age of their grandchildren
+
+Missing values result in 
+
 
 ##### Rule 6
 
