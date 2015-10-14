@@ -62,8 +62,9 @@ mean price at time `t`, but the price of the `i`th item is set equal to the pric
 
 Year of birth in household questionnaire must equal year of birth in individual questionnaire
 
-- Missing values result in undecided.
-- Results are reported per person.
+Missing values result in undecided.
+
+Results are reported per person.
 
 ##### Rule 9
 
@@ -72,6 +73,8 @@ The `forall` quantifyer signifies that the rule is satisfied for a data set when
 ```
 forall x: x.age >= 0 AND x.age <= 113
 ```
+
+Missing values result in undecided.
 
 ##### Rule 10
 
@@ -86,6 +89,8 @@ The `exists!` quantifier signifies 'there exists exactly one'.
 ```
 exists! x: x.business-id = 100 AND x.turnover > 1.000.000
 ```
+
+Missing values result in undecided.
 
 ##### Rule 12
 
