@@ -1,6 +1,14 @@
-DS= id, age, grandchild_of 
- 
-DSr:= (DS#age-28) >= DS#grandchild_of
+DS= id(identifier), age, grandchild_of 
 
-/* if a NULL value is in one of the terms of the AND the result will be as indicated in 3VL, Three-valued logic
-   see page 42 VTL-part1 */
+DSmerge:=merge(DS as "DSgp",DS as "DSgc"  
+on (DSgp#person-id= DSgc# grandchild_of),
+return (DSgc#person-id as "person-id", DSgc#age as "age"", DSgp#age as "gp_age", DSgc#grandchild_of  as "grandchild_of")
+ 
+DSr:= (DSmerge#gp_age-28) >= DSmerge#age
+
+DSinvalid:=DS setdiff DSr[keep(person-id,age,grandchild_of)]
+
+/*
+Consider that:
+- if there is a NULL value in the age this will be included in the merge and the result will claculated following the 3VL, Three-valued logic  see page 42 VTL-part1 
+- if there is a NULL value in the person-id this will be not included in the merge so that the invalid records can be found only through a difference between the originary dataset and the resulting dataset */
