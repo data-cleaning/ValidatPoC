@@ -1,0 +1,6 @@
+DS=district-id(identifier),postcode(identifier),city(identifier)
+
+
+DScount := DS[calc 1 as msr_count role "MEASURE"]
+DSr := DScount[keep (postcode, msr_count)][aggregate count (msr_count)] =
+DScount[keep (postcode, city, msr_count)][aggregate count (msr_count)][keep (postcode, msr_count)]
