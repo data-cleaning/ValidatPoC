@@ -1,7 +1,4 @@
-DS_h= household, person, year_of_birth
-DS_p= household, person, year_of_birth, gender
-/* If they are the only identifier for the two datasets than the rule is a simple comparison between the two fields */
-
-DSr:= DS_h#year_of_birth=DS_p#year_of_birth
-
-/* if a NULL value is present in one of the terms of the equality the result will be NULL */
+DS_h= household-id, person-id(identifier),person, year_of_birth
+DS_p= person-id(identifier),person, year_of_birth, gender
+ 
+ DSr:= DS_h#year_of_birth=DS_p#year_of_birth
