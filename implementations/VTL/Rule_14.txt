@@ -1,11 +1,14 @@
+DS=person-id(identifier), name, gender(identifier), age-group(identifier)
+DSgender= gender(identifier) {male, female}
+DSage =age-group(identifier) {child, adult, senior}
 /*
  * gender: male, female
  * age-groups: child, adult, senior
  */
-DSmerge := merge(DSgender "sex",DSage "group-age",
+DSmerge := merge(DSgender "DSgender"  ,DSage "DSage" ,
     on
     (1 = 1)
     return
-    (DSsex#gender as "sex",DSage-group#age group as "age-group"))
+   (DSgender#gender as "gender",DSage #age-group as "age-group"))
 DSdiff := DSmerge setdiff DS[keep (gender, age-group)]
 DSr := DSdiff [calc 1 as "msrcount" role "measure"][aggregate count(msrcount)] = 0

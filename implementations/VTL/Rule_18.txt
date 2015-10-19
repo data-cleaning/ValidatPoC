@@ -1,0 +1,18 @@
+DShousehold=household-id(identifier),members
+DSpersons=household-id(identifier), person-id(identifier)
+
+
+DSmerge:=merge (DShousehold as "DSh", DSpersons as "DSp" 
+        on DSh#household-id=DSp#household-id, 
+        return 
+        (DSh#household-id as household-id,DSh#person-id as person-id,DSp#members as members))
+ 
+
+DSout:= DSmerge[filter person-id < 1 or person-id>members][keep (household-id,members)][aggregate count (members)] = 0
+
+DSdist:= DSmerge[rename (person-id) as "p_id" role "measure"][aggregate count_distinct (p_id)][filter p id <> members]
+[aggregate count (members)] = 0
+
+
+DSr := (DSout and DSdist)
+

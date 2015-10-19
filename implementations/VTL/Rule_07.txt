@@ -1,5 +1,4 @@
 DS=product-id(identifier),price_t , price_tm1 
-
 DScalc:= DS[calc   1   as   "temp_id"   role   "identifier"][keep (temp_id, price_t , price_mt1)]
 DSmt:= DScalc [keep (temp_id,price_t)][aggregate avg(price_t)]
 DSmt_1:= DScalc [keep (temp_id,price_mt1)][aggregate avg(price_mt1)]

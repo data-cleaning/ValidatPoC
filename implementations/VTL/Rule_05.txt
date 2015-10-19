@@ -8,7 +8,3 @@ DSr:= (DSmerge#gp_age-28) >= DSmerge#age
 
 DSinvalid:=DS setdiff DSr[keep(person-id,age,grandchild_of)]
 
-/*
-Consider that:
-- if there is a NULL value in the age this will be included in the merge and the result will claculated following the 3VL, Three-valued logic  see page 42 VTL-part1 
-- if there is a NULL value in the person-id this will be not included in the merge so that the invalid records can be found only through a difference between the originary dataset and the resulting dataset */

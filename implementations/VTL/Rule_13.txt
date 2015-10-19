@@ -1,3 +1,4 @@
+DS= person-id(identifier),gender(identifier),age-group(identifier)
 /*
  * gender: male, female
  * age-groups: child, adult, senior

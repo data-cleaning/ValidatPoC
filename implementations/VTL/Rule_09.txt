@@ -6,4 +6,3 @@ DScond:= DScalc[filter age between 0 and 113]
 
 DSr:=DScond[aggregate count(age)]= DScalc[aggregate count(include NULLS age)]
 
-/* the result is FALSE both if here are incorrect records than if there are NULL values, it is TRUE in case all the records are correct*/
