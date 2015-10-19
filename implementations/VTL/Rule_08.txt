@@ -1,6 +1,4 @@
 DS_h= household-id, person-id(identifier),person, year_of_birth
 DS_p= person-id(identifier),person, year_of_birth, gender
-
+ 
 DSr:= DS_h#year_of_birth=DS_p#year_of_birth
-
-/* if a NULL value is present in one of the terms of the equality the result will be NULL */

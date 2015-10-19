@@ -1,0 +1,7 @@
+DShousehold=household-id(identifier),members
+DSpersons=person-id(identifier),household-id(identifier) (in the example fields are not correctly defined)
+
+DScount := (DSpersons[calc 1 as "members" role "MEASURE"][keep (household-id, members)][aggregate count(members)]= 
+        DShousehold)[filter members= "false"]
+DSr := DScount[calc 1 as "msr_count" role "MEASURE"][aggregate count(msr_count)] = 0
+

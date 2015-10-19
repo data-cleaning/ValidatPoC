@@ -1,3 +1,5 @@
+DS=person-id(identifier), spouse-id, relation_to_head
+
 DSfilter := DS[filter relation_to_head = 4]
 DSmerge := merge(DS "DSx",DS "DSy",
     on

@@ -1,3 +1,5 @@
+DS=id(identifier),level(identifier),weight
+
 /*
  * Create a hierarchy (actually is no possible to do using VTL because some string operators are missing)
  *
