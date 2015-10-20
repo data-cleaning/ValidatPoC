@@ -9,4 +9,4 @@ DSmerge := merge(DS "DSx",DS "DSy",
 
 DSnot_exists := DSfilter not_exists_in DSmerge
 
-DScount := DSnot_exists[calc 1 as "id" role "identifier"][keep (id, person_id)][aggregate count (person_id)]
+DScount := DSnot_exists[calc 1 as "id" role "identifier"][keep (id, person_id)][aggregate count (person_id)] = 0
