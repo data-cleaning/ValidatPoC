@@ -68,7 +68,8 @@ rules <- validator( rule_10 = any ( business_id == 100 & turnover > 1000000 ))
 export_txt(rules, file = "rule_10.txt")
 
 # rule 11 
-
+rules <- validator( rule_11 = sum( business_id == 100 & turnover > 1000000 ) == 1)
+export_txt(rules, file = "rule_11.txt")
 
 # rule 12
 rules <- validator(
@@ -78,3 +79,32 @@ rules <- validator(
 )
 export_txt(rules, file = "rule_12.txt")
 
+# rule 13
+rules <- validator( 
+  def_counts = counts := table(gender, age_group),
+  rule_13 = counts <= 1
+)
+export_txt(rules, file = "rule_13.txt")
+
+
+# rule 14
+rules <- validator(
+  def_counts    = counts := table(gender, age_group),
+  rule_gender   = gender %in% c('male','female'),
+  rule_ag       = age_group %in% c('child', 'adult', 'senior'),
+  rule_complete = counts == 1 && sum(counts) == 6
+)
+export_txt(rules, file="rule_14.txt")
+
+
+# rule 15
+rules <- validator(
+  rule_15 = postcode ~ city
+)
+export_txt(rules, file="rule_15.txt")
+
+
+# rule 16
+rules <- validator(
+)
+export_txt(rules, file="rule_16.txt")

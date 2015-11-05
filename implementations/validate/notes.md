@@ -106,3 +106,41 @@ must be avaiable as a spouse for persons with rel_to_head equal to 3.
 
      * `merge`
      * `dplyr::semi_join`, `dplyr::anti_join` or `dplyr::left_join`
+
+### rule 13
+
+VTL:
+
+- _readability_ : very difficult
+- not sure what is meant with the statement, assume that combination of gender
+ and age_group must be unique
+ 
+validate:
+
+- used `table` function to check for uniqueness.
+
+### rule 14
+
+VTL:
+
+- _readability_ : difficult
+- interpretation: each combination of gender and age_group must exist only once.
+
+validate:
+
+- used `table` function to check for completeness.
+
+### rule 15
+
+VTL:
+
+- _readability_ : difficult
+- interpretation: each unique postcode should point to same city. 
+
+validate:
+
+- implemented as a functional dependency: postcode -> city
+
+### rule 16
+
+
