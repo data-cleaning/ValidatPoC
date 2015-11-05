@@ -24,9 +24,9 @@ export_txt(rules, file = "rule_10.txt")
 # rule 12
 
 rules <- validator(
-  def_person_rel_4 = person_rel_4 := person_id[relation_to_head == 4],
-  def_spouse_3     = spouse_3 := subset(person, relation_to_head == 3),
-  rule_12 = all(person_rel_4 %in% spouse_3$spouse_id)
+  def_rel_4 = rel_4 := subset(person, relation_to_head == 4),
+  def_rel_3 = rel_3 := subset(person, relation_to_head == 3),
+  rule_12 = all(rel_4$person_id %in% rel_3$spouse_id)
 )
 
 export_txt(rules, file = "rule_12.txt")
