@@ -9,7 +9,9 @@ as.character.validator <- function(x, ...){
   })
   
   names(expr) <- labels(x)
-  ch <- sapply(expr, deparse)
+  ch <- sapply(expr, function(e){
+    paste0(deparse(e), collapse="\n")
+  })
   ch <- gsub("`:=`\\(([^,]+),(.+)\\)", "\\1 := \\2", ch)
   ch
 }
