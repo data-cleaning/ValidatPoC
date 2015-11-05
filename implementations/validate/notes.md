@@ -6,6 +6,7 @@ Notes and comments on translating `VTL` rules to `validate`
 
 VTL:
 
+- _readability_ : easy
 - not sure why person-id is necessary
 
 validate:
@@ -21,6 +22,7 @@ be to split the rule in two
 
 VTL:
 
+- _readability_ : medium, verbose
 - not sure why temp_id is needed in VTL statement
 - it is rather indirect to add a measure with value 1 and sum that to count the number of rows
 
@@ -44,6 +46,7 @@ validate:
 
 VTL:
 
+- _readability_ : medium, verbose
 - Not sure why VTL needs to do a setdiff. I assume we need to detect which grandchild grand parent combination is invalid.
 
 validate:
@@ -142,5 +145,28 @@ validate:
 - implemented as a functional dependency: postcode -> city
 
 ### rule 16
+
+VTL:
+
+- _readability_ : unknown cannot be implemented in VTL, due to missing string
+ops
+
+validate:
+
+- _readability_ : difficult (for non-R programmer), but can be implemented
+- readability can be improved when self referencing is added: in that can a self
+join can easily be added
+
+### rule 17
+
+VTL:
+- _readability_ : difficult, I used the data to have the following interpretation: 
+check if the number of persons per household equals the member of household.
+- not sure if it is correct (`filter member = "false"`?)
+
+
+### rule 18
+
+
 
 

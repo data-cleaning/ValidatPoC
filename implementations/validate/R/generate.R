@@ -105,6 +105,21 @@ export_txt(rules, file="rule_15.txt")
 
 
 # rule 16
+data <- read.csv("../../data/Rule_16_valid.csv")
+
 rules <- validator(
+  def_parent    = with_parent := sub("\\.?\\d+$", "", level),
+  def_is_parent = is_parent := level %in% with_parent,
+  def_par_lev   = parent_levels := level[is_parent],
+  def_childsum  = childsum := tapply(weight, with_parent, sum),
+  rule_16      = weight[is_parent] == childsum[parent_levels]
 )
-export_txt(rules, file="rule_16.txt")
+export_txt(rules, "rule_16.txt")
+
+
+#rule 17
+rules <- validator(
+  def_count = person_count := table(person$household_id),
+  rule17 = members == person_count[household_id]
+)
+export_txt(rules, "rule_17.txt")
