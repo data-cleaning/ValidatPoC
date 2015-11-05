@@ -1,0 +1,8 @@
+# def_person_rel_4:
+person_rel_4 :=  person_id[relation_to_head == 4]
+
+# def_spouse_3:
+spouse_3 :=  subset(person, relation_to_head == 3)
+
+# rule_12:
+all(person_rel_4 %in% spouse_3$spouse_id)

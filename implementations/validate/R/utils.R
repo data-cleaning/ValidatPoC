@@ -28,6 +28,12 @@ export_txt <- function(x, file, ...){
   writeLines(txt, con = file, ...)
 }
 
+fix_names <- function(data){
+  names(data) <- gsub("-", "_", names(data))
+  data
+}
+
+
 # test 1,2,3
 # v <- validator(x < 1, r2 = y == 2)
 # v

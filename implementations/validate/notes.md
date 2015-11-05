@@ -17,7 +17,7 @@ validate:
 
 VTL: 
 
-- verbose
+- a bit verbose
 
 validate:
 
@@ -26,3 +26,17 @@ validate:
 
 ### rule 12
 
+VTL:
+
+- verbose and not very readable.
+
+
+validate:
+
+- Made the following interpretation: all persons with rel_to_head equal to 4
+must be avaiable as a spouse for persons with rel_to_head equal to 3.
+- implemented it with plain R
+- alternative and more modern implemention could use:
+
+     * `merge`
+     * `dplyr::semi_join`, `dplyr::anti_join` or `dplyr::left_join`
