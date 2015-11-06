@@ -1,0 +1,10 @@
+VAR rueck, hf_city, counter
+rueck, counter  := {0,0}
+
+  FUER JEDES hf_city IN MATERIAL mat_Rule15 (postcode = postcode ; city )
+   WENN city /= hf_city
+     DANN rueck := 1
+    ENDE
+
+ENDE
+RUECKGABE rueck

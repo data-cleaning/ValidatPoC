@@ -1,0 +1,11 @@
+VAR rueck, hf_age
+hf_age := LEER
+
+  hf_age := MATERIAL mat_Rule05lb (person_id = grandchild_of ; age)
+
+WENN hf_age - 28 < age
+ DANN rueck := 1
+ENDE
+
+
+RUECKGABE rueck

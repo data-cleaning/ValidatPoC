@@ -1,0 +1,32 @@
+VAR rueck, d_t, d_tm1, s_t, s_tm1, d_t_neu, t, tm1, counter,  DSr
+rueck, d_t, d_tm1, s_t, s_tm1, d_t_neu, counter  := {0,0,0,0,0,0,0}
+
+"Summenbildung SP2 und SP3 über alle Sätze  "
+  FUER JEDES  t, tm1 IN MATERIAL mat_Rule07lb (price_t, price_tm1)
+          counter := counter + 1
+          s_t   := s_t + t
+          s_tm1 := s_tm1 + tm1
+
+  ENDE
+
+"Berechnung:"
+WENN counter > 0
+
+  DANN 
+    "Durchschnittberechnung"
+    d_t       := s_t   / counter
+    d_tm1     := s_tm1 / counter
+    "Neuer Durchschnittswert"
+    d_t_neu := (s_t - price_t + price_tm1) / counter
+
+    "Formel"
+     DSr :=  FUNKTION ABSOLUTWERT(d_t - d_tm1) / FUNKTION ABSOLUTWERT(d_t_neu - d_tm1)
+
+ 
+  WENN NICHT DSr IN REIHE  (0.9 ++ 1.1)
+   DANN rueck := 1
+  ENDE
+
+ENDE 
+ 
+RUECKGABE rueck

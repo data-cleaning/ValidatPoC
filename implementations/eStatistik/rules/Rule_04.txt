@@ -1,0 +1,5 @@
+(price_t = LEER ODER price_t_1 = LEER ODER price_Y_1 = LEER)
+ODER
+FUNKTION ABSOLUTWERT (price_t - price_t_1)  > price_t_1 * 0.5
+ODER
+FUNKTION ABSOLUTWERT (price_t - price_Y_1)  > price_Y_1 * 0.5

@@ -1,0 +1,18 @@
+VAR rueck,hf_relation_to_head
+rueck := {0}
+hf_relation_to_head := LEER
+
+WENN relation_to_head ='4'
+ DANN   
+
+   WENN NICHT spouse_id IN MATERIAL mat_Rule12 (person_id)
+    DANN rueck := 1
+     SONST  hf_relation_to_head :=  MATERIAL mat_Rule12 (person_id = spouse_id ; relation_to_head )
+
+      WENN hf_relation_to_head /= '3'
+       DANN  rueck := 1
+      ENDE
+   ENDE
+
+ENDE
+RUECKGABE rueck

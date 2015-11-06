@@ -1,0 +1,19 @@
+VAR rueck, hf_age_group, hf_gender,
+    male_child, female_child, male_adult, female_adult, male_senior, female_senior
+rueck,male_child, female_child,male_adult,female_adult,male_senior,female_senior  := {0,0,0,0,0,0,0}
+
+  FUER JEDES hf_gender , hf_age_group IN MATERIAL mat_Rule14 (gender , age_group)
+   WENN hf_gender = 'male'   UND hf_age_group = 'child'  DANN male_child    := male_child    + 1 ENDE
+   WENN hf_gender = 'female' UND hf_age_group = 'child'  DANN female_child  := female_child  + 1 ENDE
+   WENN hf_gender = 'male'   UND hf_age_group = 'adult'  DANN male_adult    := male_adult    + 1 ENDE
+   WENN hf_gender = 'female' UND hf_age_group = 'adult'  DANN female_adult  := female_adult  + 1 ENDE
+   WENN hf_gender = 'male'   UND hf_age_group = 'senior' DANN male_senior   := male_senior   + 1 ENDE
+   WENN hf_gender = 'female' UND hf_age_group = 'senior' DANN female_senior := female_senior + 1 ENDE
+
+  ENDE
+    WENN male_child = 0 ODER female_child = 0 ODER male_adult = 0 ODER female_adult = 0 ODER male_senior = 0 ODER female_senior = 0 
+     DANN rueck := 1
+    ENDE
+
+
+RUECKGABE rueck
