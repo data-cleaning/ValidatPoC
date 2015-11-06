@@ -12,10 +12,8 @@ describe("rule_01", {
     
     values <- confront(data, rules) %>% 
       values %>% 
-      ifelse("valid", "invalid") %>% 
-      as.character
-    values[is.na(values)] <- "undecided"
-    
+      to_valid_invalid
+
     expect_equal(values, data$expected) # check against expected
   })
 })
