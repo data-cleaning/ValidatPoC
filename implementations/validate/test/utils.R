@@ -5,7 +5,9 @@ DATADIR <- "../../../data"
 RULEDIR <- ".."
 
 read_data <- function(file_name, ...){
-  read.csv(file.path(DATADIR, file_name), ..., stringsAsFactors = FALSE)
+  data <- read.csv(file.path(DATADIR, file_name), ..., stringsAsFactors = FALSE, check.names = F)
+  names(data) <- gsub("[ .-]", "_", names(data))
+  data
 }
 
 read_rules <- function(file_name){

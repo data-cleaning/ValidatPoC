@@ -167,6 +167,17 @@ check if the number of persons per household equals the member of household.
 
 ### rule 18
 
+data: 
 
+- I suspect headers of person data file are switched
 
+VTL:
+
+- _readability_: difficult, I used the data to have the following interpretation: 
+check if a person-id is between 1 and the maximum number of persons within that household
+
+validate:
+
+- Used person file as the data set to be checked and the household file as the reference 
+data set. Makes use of R indexing (yeah!).
 

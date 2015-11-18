@@ -13,7 +13,7 @@ describe("rule_01", {
     values <- confront(data, rules) %>% 
       values %>% 
       to_valid_invalid
-
+    
     expect_equal(values, data$expected) # check against expected
   })
 })

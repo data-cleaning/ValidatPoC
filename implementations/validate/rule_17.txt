@@ -2,4 +2,4 @@
 person_count :=  table(person$household_id)
 
 # rule17:
-member == person_count[household_id]
+members == person_count[household_id]

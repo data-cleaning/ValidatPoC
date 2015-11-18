@@ -25,7 +25,7 @@ export_txt(rules, "rule_03.txt")
 #rule 4
 rules <- validator(
   rule_04 = (price_t - price_tmin1) <= 0.5*price_tmin1 &
-            (price_t + price_Ymin1) <= 0.5*price_Ymin1
+            (price_t - price_Ymin1) <= 0.5*price_Ymin1
 )
 export_txt(rules, file="rule_04.txt")
 
@@ -44,8 +44,7 @@ export_txt(rules, file='rule_06.txt')
 
 # rule 7
 rules <- validator(
-  def_mean_diff = mean_diff := mean(price_t) - mean(price_tm1),
-  def_ratio     = ratio := abs(mean_diff + (price_tm1 - price_t)/length(price_t)/mean_diff),
+  def_ratio     = ratio := abs(mean(price_t) - mean(price_tm1) + (price_tm1 - price_t)/length(price_t)/(mean(price_t) - mean(price_tm1))),
   rule_07 = ratio >= 0.9 && ratio <= 1.1
 )
 export_txt(rules, file='rule_07.txt')
@@ -123,3 +122,13 @@ rules <- validator(
   rule17 = members == person_count[household_id]
 )
 export_txt(rules, "rule_17.txt")
+
+# rule 18
+
+rules <- validator(
+  def_max = total_members := household$members[match(household_id, household$household_id)],
+  rule18 = person_id >= 1 && person_id <= total_members 
+)
+export_txt(rules, "rule_18.txt")
+
+
