@@ -1,0 +1,14 @@
+VAR rueck, s1  , z1 , total
+rueck,z1,total := {0,0,0}
+
+FUER JEDES s1  IN MATERIAL mat_Rule03 (level1)
+
+   WENN s1 /= 'NA' DANN  total := total + 1 ENDE "Gesamtsätze ohne LEER Werte (NA)"
+   WENN s1  = 'high' DANN z1 := z1 + 1   ENDE    "Anz. high "
+
+ENDE
+
+"Auswertung"
+WENN z1 > total * 0.1 DANN rueck := 1 ENDE
+
+RUECKGABE rueck

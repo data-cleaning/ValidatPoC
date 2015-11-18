@@ -1,0 +1,32 @@
+VAR rueck, hf_AnzSst, hf_such, hf_level, hf_sum, hf_weight, hit
+rueck,hf_sum,hit  := {0,0,0}
+
+hf_AnzSst := FUNKTION WERTLAENGE (level)
+
+WENN hf_AnzSst IN REIHE  (1,3)
+ DANN 
+
+  FUER JEDES hf_level, hf_weight IN MATERIAL mat_Rule16 (level, weight )
+
+   WENN hf_AnzSst = 1 UND FUNKTION WERTLAENGE (hf_level) = 3 UND 
+                          FUNKTION TEIL (hf_level,1,1) = FUNKTION TEIL (level,1,1) 
+     DANN hf_sum:= hf_sum + hf_weight  
+          hit := 1
+    ENDE
+
+   WENN hf_AnzSst = 3 UND FUNKTION WERTLAENGE (hf_level) = 5 UND 
+                          FUNKTION TEIL (hf_level,1,3) = FUNKTION TEIL (level,1,3) 
+     DANN hf_sum:= hf_sum + hf_weight  
+          hit := 1
+    ENDE
+
+ ENDE
+
+  "Fehlerermittlung"
+  WENN hf_sum /= weight UND hit = 1
+   DANN rueck := 1
+  ENDE
+
+ENDE
+
+RUECKGABE rueck

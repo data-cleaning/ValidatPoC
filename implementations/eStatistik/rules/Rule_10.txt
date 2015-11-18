@@ -1,0 +1,14 @@
+VAR rueck, hf_turnover 
+rueck := 1
+hf_turnover := LEER
+
+FUER JEDES hf_turnover IN MATERIAL mat_Rule10 (business_id = '100' ; turnover )
+
+
+  WENN hf_turnover /= LEER UND hf_turnover > 1000000
+   DANN rueck := 0
+  ENDE
+
+ENDE
+
+RUECKGABE rueck

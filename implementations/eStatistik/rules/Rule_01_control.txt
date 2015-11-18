@@ -1,0 +1,3 @@
+WENN PRUEFE Undecided = FALSCH  
+ DANN PRUEFE Rule_01
+ENDE

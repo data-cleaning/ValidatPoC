@@ -1,0 +1,23 @@
+VAR rueck, hf_turnover, hf_undecided, hf_count
+rueck,hf_undecided, hf_count := {1,0,0}
+hf_turnover := LEER
+
+  FUER JEDES hf_turnover IN MATERIAL mat_Rule11 (business_id = '100' ; turnover )
+
+   WENN hf_turnover  = LEER 
+    DANN hf_undecided := 1 
+   
+     SONST
+      WENN hf_turnover > 1000000
+       DANN hf_count :=  hf_count + 1  
+      ENDE
+   ENDE
+ ENDE
+
+ WENN hf_undecided = 1 ODER  hf_count = 1
+  DANN rueck := 0
+ ENDE
+
+
+
+RUECKGABE rueck

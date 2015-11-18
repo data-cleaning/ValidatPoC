@@ -1,0 +1,3 @@
+WENN price_t /= LEER UND price_t_1 /= LEER  UND  quantity_t /= LEER   UND quantity_t_1  /= LEER 
+DANN PRUEFE Rule_06
+ENDE

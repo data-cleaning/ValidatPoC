@@ -1,0 +1,3 @@
+WENN postcode /= LEER
+ DANN PRUEFE Rule_15
+ENDE

@@ -1,0 +1,3 @@
+WENN cost /= LEER UND profit /= LEER 
+ DANN PRUEFE Rule_02
+ENDE

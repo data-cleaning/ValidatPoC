@@ -1,0 +1,1 @@
+NICHT hours_worked IN REIHE (1 ++ 80)

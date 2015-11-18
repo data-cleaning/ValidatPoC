@@ -1,0 +1,12 @@
+VAR rueck, hf_dummy, counter
+rueck, counter  := {0,0}
+
+  FUER JEDES hf_dummy IN MATERIAL personen (household_id = household_id ; person_id )
+   counter := counter + 1
+  ENDE
+
+   WENN counter /= members
+     DANN rueck := 1
+    ENDE
+
+RUECKGABE rueck

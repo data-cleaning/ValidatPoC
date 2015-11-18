@@ -1,0 +1,9 @@
+VAR rueck
+rueck := 0
+
+WENN NICHT  REIHE (person_id , person , year_of_birth) 
+ IN MATERIAL Haushalt (person_id , person , year_of_birth)
+ DANN rueck := 1
+ENDE
+
+RUECKGABE rueck

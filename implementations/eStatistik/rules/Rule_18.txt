@@ -1,0 +1,14 @@
+VAR rueck, hf_person_id, x1
+rueck := 0
+
+WIEDERHOLE FUER x1 := 1 BIS x1 > members
+     WENN NICHT REIHE (household_id, x1) IN MATERIAL personen (household_id , person_id )
+      DANN rueck := 1
+     ENDE
+
+  ENDE
+"Anmerkung: "
+"Fall Anz. der Personensätze > der HH-members wird in Rule_11 abgefangen"
+"-> Daher keine Überprüfung mehr"
+
+RUECKGABE rueck
