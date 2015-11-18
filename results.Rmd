@@ -1,0 +1,33 @@
+---
+title: "A shallow code analyses"
+author: "Mark van der Loo"
+date: "November 18, 2015"
+output: html_document
+---
+
+We performed simple line- and character counts of each implementation.
+
+```{r,echo=FALSE}
+dat <- read.csv("code_counts.csv")
+library(reshape2)
+library(ggplot2)
+```
+
+
+
+
+```{r,echo=FALSE}
+qplot(data=dat, x=rule,y=characters, geom="bar",stat="identity",facets=~lang)
+```
+
+```{r,echo=FALSE}
+A <- reshape2::acast(data=dat, formula = rule ~ lang, value.var="characters")
+barplot(t(prop.table(A,1)),horiz=TRUE,las=1,legend.text=TRUE)
+
+```
+
+```{r,echo=FALSE}
+A
+```
+
+
