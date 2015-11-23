@@ -1,0 +1,23 @@
+DECLARE rc, tmp_turnover, tmp_undecided, tmp_count
+rc,tmp_undecided, tmp_count := {1,0,0}
+tmp_turnover := EMPTY
+
+  FOR EVERY tmp_turnover IN DATASET mat_Rule11 (business_id = '100' ; turnover )
+
+   IF tmp_turnover  = EMPTY 
+    THEN tmp_undecided := 1 
+   
+     ELSE
+      IF tmp_turnover > 1000000
+       THEN tmp_count :=  tmp_count + 1  
+      END
+   END
+ END
+
+ IF tmp_undecided = 1 OR  tmp_count = 1
+  THEN rc := 0
+ END
+
+
+
+RETURN rc

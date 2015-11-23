@@ -1,0 +1,10 @@
+DECLARE rc, tmp_city, counter
+rc, counter  := {0,0}
+
+  FOR EVERY tmp_city IN DATASET mat_Rule15 (postcode = postcode ; city )
+   IF city /= tmp_city
+     THEN rc := 1
+    END
+
+END
+RETURN rc

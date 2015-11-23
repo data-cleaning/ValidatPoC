@@ -1,0 +1,1 @@
+NOT hours_worked IN SEQUENCE (1 ++ 80)

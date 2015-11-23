@@ -1,0 +1,13 @@
+DECLARE rc, dummy, counter
+rc, counter  := {0,0}
+
+  FOR EVERY dummy IN DATASET mat_Rule13 (gender = gender, age_group = age_group  ; person_id )
+  counter := counter + 1
+
+
+    IF counter /= 1
+     THEN rc := 1
+    END
+
+END
+RETURN rc

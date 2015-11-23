@@ -1,0 +1,3 @@
+IF price_t /= EMPTY AND price_t_1 /= EMPTY  AND  quantity_t /= EMPTY   AND quantity_t_1  /= EMPTY 
+THEN CHECK Rule_06
+END

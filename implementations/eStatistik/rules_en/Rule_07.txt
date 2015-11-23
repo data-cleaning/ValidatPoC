@@ -1,0 +1,34 @@
+DECLARE rc, d_t, d_tm1, s_t, s_tm1, d_t_neu, t, tm1, counter,  DSr
+rc, d_t, d_tm1, s_t, s_tm1, d_t_neu, counter  := {0,0,0,0,0,0,0}
+
+"Count totals SP2 and SP3 across all records"
+  FOR EVERY  t, tm1 IN DATASET mat_Rule07lb (price_t, price_tm1)
+          counter := counter + 1
+          s_t   := s_t + t
+          s_tm1 := s_tm1 + tm1
+
+  END
+
+"Evaluate result"
+
+IF counter > 0
+
+  THEN 
+    "Compute previous average"
+    d_t       := s_t   / counter
+    d_tm1     := s_tm1 / counter
+	
+    "Compute new average"
+    d_t_neu := (s_t - price_t + price_tm1) / counter
+
+    "Compute relative size of new average"
+     DSr :=  FUNCTION ABSOLUTEVALUE(d_t - d_tm1) / FUNCTION ABSOLUTEVALUE(d_t_neu - d_tm1)
+
+  "Check"
+  IF NOT DSr IN SEQUENCE  (0.9 ++ 1.1)
+   THEN rc := 1
+  END
+
+END 
+ 
+RETURN rc

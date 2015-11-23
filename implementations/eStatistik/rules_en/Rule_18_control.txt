@@ -1,0 +1,3 @@
+IF members /= EMPTY
+THEN CHECK Rule_18
+END

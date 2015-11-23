@@ -1,0 +1,3 @@
+IF cost /= EMPTY AND profit /= EMPTY 
+ THEN CHECK Rule_02
+END

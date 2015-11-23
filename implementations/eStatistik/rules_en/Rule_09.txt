@@ -1,0 +1,20 @@
+DECLARE tmp_age, rc, tmp_decided, tmp_invalid
+rc,tmp_decided, tmp_invalid := {0,0,0}
+tmp_age := EMPTY
+FOR EVERY tmp_age IN DATASET mat_Rule09 (age)
+
+   IF tmp_age  = EMPTY 
+    THEN tmp_decided := 1 
+   
+     ELSE
+      IF NOT tmp_age  IN SEQUENCE (0++113)
+       THEN tmp_invalid := 1  
+      END
+   END
+END
+
+IF tmp_decided = 0 AND  tmp_invalid = 1
+ THEN rc := 1
+END
+
+RETURN rc

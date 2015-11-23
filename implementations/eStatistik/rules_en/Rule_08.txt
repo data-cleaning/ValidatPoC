@@ -1,0 +1,11 @@
+DECLARE rc
+rc := 0
+
+"Haushalt = household"
+
+IF NOT  SEQUENCE (person_id , person , year_of_birth) 
+ IN DATASET Haushalt (person_id , person , year_of_birth)
+ THEN rc := 1
+END
+
+RETURN rc
