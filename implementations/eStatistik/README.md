@@ -23,10 +23,17 @@ data validation and editing tools and infrastructure:
      for invoking edits explicitly. An edit rule is therefore always bound to exactly one check and also has a very
      limited instruction set.
   4. *Functions* provide a way for creating re-usable units of code. Functions dispose of the full instructions set
-     expect that checks cannot be invoked from functions.
-     
+     expect that checks cannot be invoked from functions. Functions can be invoked everywhere and recursively.
+
 * In the execution environment *Data Edit Runtime* (DER), validation rules and other programmatic objects, reference
-  data and other metadata are bound to a *survey* node as a *resource*. Different versions of one resource can exist.
-  A survey is associated with one or more *reference periods*. Reference periods serve to associate the data to be
-  validated with (a version of) the resources used to perform the validation that are in turn associated with the
-  parent survey. For a given reference period, exactly one data set under validation can exist.
+  data and other *resources* are bound to a *survey* node. Different versions of one resource can exist. A survey is
+  associated with one or more *reference periods*. Reference periods serve to associate the data to be validated with
+  (a version of) the resources used to perform the validation that are in turn associated with the parent survey.
+  For a given reference period, exactly one data set under validation can exist.
+  
+* During execution of a validation flow, only the current record or the current set of hierarchical records (such
+  as household and associated person records) of the data set under validation is visible and can be read and write
+  accessed. Iterating over a complete data set is only possible in controls and functions and if the data set
+  is defined as reference data.
+
+  
