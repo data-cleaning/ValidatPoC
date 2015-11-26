@@ -26,7 +26,7 @@ data validation and editing tools and infrastructure:
   4. *Functions* provide a way for creating re-usable units of code. Functions dispose of the full instructions set
      expect that checks cannot be invoked from functions. Functions can be invoked everywhere and recursively.
   
-  Files that serve as procedures have `control`` in their file name, while all other `.txt` files represent simple
+  Files that serve as procedures have `control` in their file name, while all other `.txt` files represent simple
   validation rules.
   
 * In the execution environment *Data Edit Runtime* (DER), programmatic objects such as validation rules, reference
@@ -51,6 +51,6 @@ data validation and editing tools and infrastructure:
   and is configured as a hard check (this configuration takes place in the rule editor). `Rule_01.undecided.txt`
   only checks if `hours_worked` is empty and represents a soft check. The procedure `Rule_01_control.txt` combines
   these checks, invoking `Rule_01.txt` only if `Rule_01.undecided.txt` returns `FALSE`, in which case `hours_worked`
-  is not empty. In this way, a soft error will be registered and displayed is the value is missing, and a hard error
-  ist a value is present but not within the valid range.
+  is not empty. In this way, a soft error will be registered and displayed if the value is missing, and a hard error
+  if a value is present but not within the valid range.
   
