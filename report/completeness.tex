@@ -1,0 +1,806 @@
+\textsc{\Large Tjalling Gelsema, Laura Vignola and Gianpiero Bianchi}
+\vspace{0.6 cm}
+
+\noindent
+This chapter is concerned with the completeness of VTL, i.e., with the question whether or not every statement that is considered a validation rule can be expressed as a VTL statement.
+
+\section*{Introduction}
+To try to answer this question, we must refer to a `universe of validation rules', or at least an indication of the types of validation rules that belong to that universe. This indication we get from three sources, available at the time of writing this chapter: the Handbook on Validation \cite{validation_handbook}, or at least the first part of it containing the definition of validation, the results from the survey \cite{validation_survey}, in particular the 800 or so examples of validation rules obtained from various statistical domains and various member states, and earlier chapters of this report. The survey gives a diverse set of rules that are considered part of the validation process but, as we shall see, is still incomplete. The role of the Handbook in this chapter is that the definition and the typologies of validation in it can be used as an inspiration to come up with more `exotic' validation rules, i.e., type of rules that are not part of the survey but considered validation rules anyway, according to the definition.
+
+The strategy to answer the completeness question is to try to pick as diversely as possible a set of validation rules from the universe, expressed in some formal or informal language, hypothesize that they cannot be expressed in VTL, and reject the hypothesis if a correct translation to VTL turns out to be possible.
+
+\section{Quantification in validation rules}
+Upon reading the list of example validation rules from the survey, one notices a few things. Firstly, they nearly all use a `declarative' style, in the sense that they only express the validation rule itself and don't go into the details of the validation process (such as, e.g., what to return when a validation rule fails, or the order of steps that need to be taken to perform the validation). In short, they focus on the WHAT of validation: the specification of the rule, and nothing more.
+
+This is in contrast to the  mainly `imperative' or procedural style of rules expressible in VTL, that focuses on HOW to validate: these rules specify the validation process. The differences between these styles was already becoming apparent in, e.g., the difference between the textual rule of Table~\ref{Tab1-3} and the VTL translation: the first is a purely logical rule (i.e., returning {\it true} or {\it false}) while the latter returns a table which is the result of a {\bf merge}, and explicitly sums up the component names in the result. In this chapter we will see that purely logical statements that are translated into VTL get an imperative character in the form of a sequence of assignments. This sequence is thus a set of instructions for performing validation, whereas the purely logical statement is just the specification of the validation rule.
+
+Also, many of these rules are expressed in natural language (which, as a matter of fact, enhances their readability and understanding). In general, it seems that when it comes to communicating rules, like in the survey, one prefers a `declarative' style close to natural language, which only specifies the rule itself and not the steps that need to be taken to perform the validation. So, rules such as
+\begin{verbatim}
+  IF
+    B2Status=LoenModt
+  THEN
+    B2ELEV		{B2s13}
+  ENDIF
+\end{verbatim}
+apparently originating from a BLAISE-questionnaire, are far less common in the survey than rules like
+\begin{verbatim}
+  The prices have to be positive
+\end{verbatim}
+which is completely expressed in natural language, or
+\begin{verbatim}
+  year of birth > 1900 AND year of birth <= reference year
+\end{verbatim}
+which uses a combination of natural language and logical operations. Statements like JOIN, UNION and SELECT do not appear at all in the results from the survey.
+
+Secondly, many of the rules are implicitly universally quantified, meaning that a rule like
+\begin{verbatim}
+  age >= 0 AND age <= 113
+\end{verbatim}
+when applied to a data set is supposed to hold true for {\em all} records in that data set. Implicit universal quantification is thus supposed to be applied record-wise: the above statement returns the value `true' if and only if it returns true for each of the records in a data set.
+
+The above observations, together with results from the handbook, lead to a number of possible requirements for a style of expressing validation rules that is more formal than the examples above from the survey. Firstly, if the formal definition of a {\em data validation function} from the handbook is taken into consideration, viz. a boolean class function $v:S\to\{0,1\}$ with $S$ the class all data sets, then it is natural to require that a data validation language is a logical language, i.e., a language that uses propositional, predicate or some other logic at its basis. Secondly, the observation that many rules use implicit universal quantification suggests a predicate logic where the quantification takes place over records of a data set. Thirdly, then: the observation that a `declarative' style is preferred over a `procedural' style of expressing and communicating validation rules, suggests that a language that resembles relational calculus \cite{abiteboul} is better suited for validation than a language resembling the JOIN-, UNION-, SELECT-style of relational algebra \cite{abiteboul}.\footnote{Traditionally, cf. \cite{abiteboul}, both the calculus and the algebra, in fact all the database languages considered there, are dubbed declarative. However, it seems fair to say, cf. \cite{dude}, that when both are compared, the algebra is the ``procedural'' one and the ``calculus'' the declarative one.}
+
+Relational calculus uses a predicate logic with both universal and existential quantification over records, the usual logical connectives such as AND and NOT, named columns to access individual values in a record, and, optionally and depending on the nature of the data sets to be specified, a number of logical and functional operators (such as `$<$' and '$+$', respectively). Thus, a formula like
+\begin{verbatim}
+  forall x: x.age >= 0 AND x.age <= 113
+\end{verbatim}
+which is a translation of the above example from the survey, is a typical example of the use of the first-order logic in the relational calculus.
+
+As is well-known \cite{elmasri, abiteboul}, relational algebra is computationally equally expressive as relational calculus, leaving some technicalities aside. It should therefore come as no surprise that rules in the relational calculus style, such as those mentioned above, can be translated to VTL, which is loosely based on relational algebra. \footnote{However, because of the introduction of some extra language constructs such as variable assignment, and stipulating that a VTL `program' is a sequence of assignments, VTL is even more imperative than relational algebra.} Still, we feel that such a translation can be a useful exercise, for two reasons. First, a full query in the domain relational calculus (DRC)\footnote{Another kind is the tuple relational calculus, but they are also equally expressive.} reads as follows:
+\begin{quote}
+$\{\langle t \mid P(t)\}$
+\end{quote}
+where $t$ is a tuple (a record) and $P$ is a predicate formula in the sense meant above. Thus, whereas formulas return a truth value (true or false), a full query from DRC returns a data set (or rather, the set of tuples for which the formula $P$ holds true, to be precise). Second, at the moment we are only assuming that VTL is a language similar to relational algebra, i.e., the assumption is that VTL is equally expressive as a relational algebra, and only when this assumption holds true the translation of the above examples to VTL (or more generally, examples that employ the full relational calculus) would follow. The fact that VTL operates on multisets of records instead of sets of records makes VTL less likely a relational algebra. For these two reasons we feel it is still valuable to try to translate to VTL a few example validation rules from the survey that employ existential or universal quantification, or better still: a combination of both.
+
+As an appetizer we propose a validation rule that is not mentioned in the survey but, we feel, should equally qualify as a validation rule nevertheless. More specifically, we propose to translate to VTL the following rule that employs only existential quantification:
+\begin{verbatim}
+(ia)  exists x: x.business-id = 100 AND x.turnover > 1.000.000
+\end{verbatim}
+which, applied to a two column data set of which each row represents a unique business (and with columns named `business-id' and `turnover' respectively) returns true if and only if there exists a record (i.e., a business) with business-id equaling 100 and that has a turnover of over 1.000.000 (euros, say). The rule could thus be interpreted as to ensure that in a data set to which it is applied, the existence of a particularly significant business is guaranteed. The type of data sets this rule is supposed to be applied to is the following:
+\begin{center}
+\begin{tabular}[c]{|c|c|}
+\hline
+business-id & turnover \\
+\hline
+\hline
+98 & 105.000 \\
+\hline
+99 & 570.000 \\
+\hline
+100 & 1.450.000 \\
+\hline
+$\cdots$ & $\cdots$ \\
+\hline
+\end{tabular}
+\end{center}
+and it is clear that rule (ia) should return true if applied to the above data set.
+
+
+As an alternative to `pure' existential quantification we also propose to translate
+\begin{verbatim}
+(ib)  exists! x: x.business-id = 100 AND x.turnover > 1.000.000
+\end{verbatim}
+where `exists!' denotes the existence of exactly one record satisfying the condition.
+
+Second, there are a few rules from the survey that use a combination of existential and universal quantification. An example of such a rule is the following which we record here verbatim:
+\begin{verbatim}
+  If person X is daughter in law of the household head, then
+  it [sic] should exist another person Y who is the husband of
+   the person X and sun [sic] of the household head.
+\end{verbatim}
+In an application of this rule to a data set, we imagine that data set having the following structure:
+\begin{center}
+\begin{tabular}[c]{|c|c|c|c|}
+\hline
+person-id & household-id & relation\_to\_head & spouse-id \\
+\hline
+\hline
+1 & 1 & 1 & 4\\
+\hline
+2 & 1 & 4 & 3\\
+\hline
+3 & 1 & 3 & 2\\
+\hline
+$\cdots$ & $\cdots$ & $\cdots$ & $\cdots$\\
+\hline
+\end{tabular}
+\end{center}
+where each row represents a person. We assume that the value `1' in the column named `relation\_to\_head' means that a person is the head of the household, and that the values `3' and '4' mean that the corresponding persons are the son and the daughter-in-law, respectively, of the household head. For technical but otherwise irrelevant reasons we assume that married people live in the same household and that `person-id' forms a rank of people in the same household, so that the combination of `person-id' and `household-id' forms the key of the data set. Using the more formal predicate language sketched above, the above rule thus reads as follows:
+\begin{verbatim}
+(ii)  forall x: IF x.relation_to_head = 4 THEN exists y:
+      x.spouse-id = y.person-id AND y.relation_to_head = 3
+\end{verbatim}
+where it should be understood that the implication is the usual shorthand for the equivalent predicate that employs NOT and OR (see the Chapter~2 of this report). In later sections, the translations to VTL of example rules (ia), (ib) and (ii) are given.
+
+\section{Structural validation rules}
+Though the Handbook on Validation \cite{validation_handbook} does not treat structural validation, in the survey are some example rules that can be considered structural validation rules and that we will consider in this section.
+
+In any case, as was mentioned in Chapter~1 of this report, when one thinks of a data set as a function, it is natural to define structural validation as the test whether or not a function $f$ is a member of the function space $D^I$ (which has the same meaning as the expression $f:I\to D$) with $I=I_1\times\cdots\times I_m$ the `independent variables' and $D=D_1\times\cdots\times D_n$ the `dependent variables'. The exact nature of this test, as we noted, depends on the notion of a function; more specifically it depends on the adoption of the concept of a total or a partial function. It should be clear that the concept of a partial function is weaker than that of a total function, in the sense that if $f$ is a member of the space of partial functions $D^I$, then is it a member of $D^{I\cup J}$ for every set $J$, a statement that does not hold for total functions. So, structural validation employing the notion of a total function is more expressive than when the notion of a partial function is used.
+
+The results from the survey contain some examples of structural validation in the partial sense. For instance, stated very generally, one response reads
+\begin{verbatim}
+  Identify questionaires [sic] for duplicates
+\end{verbatim}
+and another, somewhat more specific, states
+\begin{verbatim}
+  We do check for duplication of respondents by checking the
+  `person_id'
+\end{verbatim}
+In any case, in the general sense checking whether or not a data set $f$ is a partial function $I_1\times\cdots\times I_m\to D_1\times\cdots\times D_n$ involves checking for every record $(i_1,\dots,i_m,d_1,\dots,d_n)$ in the data set
+\begin{itemize}
+\item[(A)] whether or not $i_j\in I_j$, $1\le j\le m$, and $d_j\in D_j$, $1\le j\le n$, and
+\item[(B)] whether or not the combination of values $(i_1,\dots,i_m)$ is unique, or in other words, checking whether or not there exist two separate records with identical values for their independent variables.
+\end{itemize}
+Note that (B) is a statement that cannot be expressed as a predicate in the relational calculus sense above, since, strictly speaking, the relational calculus acts on sets of records instead of multisets of records.
+
+As a more specific example of such a check, we propose the following dimensional data structure:
+\begin{center}
+\begin{tabular}[c]{|c|c|c|}
+\hline
+sex & age\_group & avg\_salary \\
+\hline
+\hline
+m & 16--20 & 12.000\\
+\hline
+m & 21-30 & 27.000\\
+\hline
+$\cdots$ & $\cdots$ & $\cdots$\\
+\hline
+\end{tabular}
+\end{center}
+A data set that corresponds to this structure lists the average salary of classes of people (within some population) according to their sex and age group. Part (B) of the structural validation in this particular case thus involves checking whether or not: 
+\begin{verbatim}
+(iii) The combination of sex and age group in the data set is
+      unique, i.e., there do not exist two distinct records in
+      the data set with an identical combination of values for
+      sex and age group.
+\end{verbatim}
+and we propose to have this validation rule translated to VTL.
+
+It is often an additional requirement for a dimensional data set such as specified above that it is complete in the sense that every combination of values for the independent variables is present in some record in the data set. With this additional requirement, we turn structural validation in the sense of a partial function into structural validation in the total sense. Thus we also propose to translate to VTL the following test that refers to the data structure above:
+\begin{verbatim}
+(iv)  Every combination of sex and age group occurs at least
+      once in the data set.
+\end{verbatim}
+where it is understood that $\{\mathrm{m},\mathrm{f}\}$ is the value set corresponding to column named `sex' and $\{16-20, 21-30, 31-45, 46-60, 61-65\}$ is the value set corresponding to the column named `age\_group', respectively. 
+
+Finally, what could also be considered part of structural validation are so-called functional dependencies in a data set. Though no validation rule of this type has been encountered in the results of the survey, functional dependencies are studied extensively in the data base literature \cite{abiteboul} in particular for their use in the structural specification of a data set \cite{armstrong} for which they were originally intended. Formally, considering a data structure $D^I$ with $I=K_1\times\cdots\times K_m$ and $D=K_{m+1}\times\cdots\times K_{m+n}$ a structural dependency is a statement of the form $K_{j_1},\dots,K_{j_l}\to K_{j_{l+1}}$ with $K_{j_i}\in\{K_1,\dots,K_{m+n}\}$ and the $j_i$ distinct. This statement should be interpreted as the requirement that each combination of values $(k_{j_1},\dots,k_{j_l})$ in a record determines the value for $k_{j_{l+1}}$. In other words: if two distinct records have identical values corresponding to $K_{j_1},\dots,K_{j_l}$, they have corresponding values for $K_{j_{l+1}}$. As an example, consider the following micro data structure:
+\begin{center}
+\begin{tabular}[c]{|c|c|c|}
+\hline
+person-id & postal\_code & city \\
+\hline
+\hline
+1 & 2624 MA & Delft\\
+\hline
+2 & 2492 JP & Den Haag\\
+\hline
+$\cdots$ & $\cdots$ & $\cdots$\\
+\hline
+\end{tabular}
+\end{center}
+of people together with the postal code and their city of residence. If we assume that the city of residence is determined, assuming postal code of residence, then data sets of this structure should respect the functional dependency
+\begin{verbatim}
+(v)  postal_code --> city
+\end{verbatim}
+that we propose to be translated to VTL.
+
+\section{Validation rules involving aggregation}
+To be of use in statistics, validation rules must be capable of handling aggregation in a satisfying way. In fact, the survey results show numerous validation rules that, in one way or another, involve aggregation. In this section we propose that three of them be translated to VTL.
+
+Validation rules from the survey treat aggregation in different forms. Some involve the integrity of a data set that holds an aggregation schema, as the following rule from the survey suggests:
+\begin{verbatim}
+  Sum of lower level COICOP weights is equal to weight of
+  higher level aggregates
+\end{verbatim}
+In order to make this rule suitable for translation, we assume a data set structure with two columns: one for (imaginary) hierarchical codes, and one for (imaginary) weights. We assume that the codes are of the pattern $x_1.x_2.\cdots.x_k$ where $x_i\ge 1$ is an integer and $k\ge 1$. Further, we assume that each of these codes is unique (in any data set that follows this data set structure) and that they form a many-rooted ordered tree: if the data set contains the code $x_1.x_2.\cdots.x_k.x_{k+1}$ (with $k\ge 1$) then it also contains the code $x_1.x_2.\cdots.x_k$ together with the codes $x_1.x_2.\cdots.x_k.(x_{k+1}-i)$, for any $i\ge 0$ smaller than $x_{k+1}$. A data set following this structure thus looks like this:
+\begin{center}
+\begin{tabular}[c]{|c|c|}
+\hline
+code & weight \\
+\hline
+\hline
+1 & 0.2 \\
+\hline
+1.1 & 0.03 \\
+\hline
+1.2 & 0.07 \\
+\hline
+1.3 & 0.1 \\
+\hline
+1.3.1 & 0.05 \\
+\hline
+$\cdots$ & $\cdots$ \\
+\hline
+\end{tabular}
+\end{center}
+The validation rule we propose to translate is to check whether or not `lower-level' weights sum up to their `higher-level' parents. If we denote $w(x_1.\cdots.x_k)$ the weight associated with the code $x_1.\cdots.x_k$, then this requirement translates to
+\begin{verbatim}
+(vi)  forall k >= 1: w(x1. ... .xk) equals the sum of
+      w(x1. ... .xk.i) forall i >= 0
+\end{verbatim}
+where it is understood that $w(x_1.\cdots.x_k)=0$ for codes $x_1.\cdots.x_k$ that do not appear in the data set this rule is applied to.
+
+Further, another form of validation involving aggregation is inspired by the following rule from the survey:
+\begin{verbatim}
+  The sum of the persons in the household must be the same
+  of [sic] the individual records for that household, and
+  to the entry in the household form
+\end{verbatim}
+In order to make the application of this rule to a data set more precise, we assume the following data set structure:
+\begin{center}
+\begin{tabular}[c]{|c|c|c|}
+\hline
+person-id & household-id & no\_of\_household\_members\\
+\hline
+\hline
+1 & 1 & 2 \\
+\hline
+2 & 1 & 2 \\
+\hline
+1 & 2 & 3 \\
+\hline
+2 & 2 & 3 \\
+\hline
+3 & 2 & 3 \\
+\hline
+$\cdots$ & $\cdots$ & $\cdots$ \\
+\hline
+\end{tabular}
+\end{center}
+Note that we assume a functional dependency between household-id and no\_of\_household\_members and that this dependency creates redundancy: for each household-id, the number of household members reported must be the same. The test, formulated in an informal style, that we propose to be translated to VTL now reads as follows:
+\begin{verbatim}
+(viia)  The value for no_of_household_members must equal
+        the number of records for each household
+\end{verbatim}
+
+An additional interesting requirement associated with data sets such as the one suggested above is that person-id forms a rank of people in the household, i.e., each number between 1 and the number of household members must appear as a person-id. In quasi-formal style, this requirement reads:
+\begin{verbatim}
+(viib)  forall x: forall n:
+        IF 1 <= n <= x.no_of_household_members
+        THEN exists y: x.household-id = y.household-id
+        AND y.person-id = n
+\end{verbatim}
+where it is assumed that $n$ ranges over the natural numbers. We propose that this rule be translated to VTL as well.
+
+\section{Translation of the rules}
+For every rule will be reported
+\begin{itemize}
+\item the structure of the dataset used, specifing if a field is an identifier or a measure;
+\item the textual rule;
+\item the VTL statements for every steps shortly described;
+\end{itemize}
+ 
+\bigskip\noindent
+The VTL rules works over datasets or constant. For this reason some rules return a boolean value represented by a boolean Dataset  having only one data point with a field assuming value equal to TRUE or FALSE depending on the result.
+\noindent
+In VTL every Dataset must have one or more identifiers, where these are not included in the rule we will consider as identifier a trivial field (key) that correspond to a sequential number inside the dataset.It is not actually possible to create a sequential field using VTL because there are no operators than allow it for this reason in the examples where the field ``key" will be found it will be supposed to already have it. 
+
+
+
+\noindent
+\textbf{ia) DS}: key (identifiers), business\_id(measure), turnover(measure).
+
+\bigskip\noindent
+\textbf{Rule}: check if exists x: x.business\_id = 100 AND x.turnover $>$ 1.000.000. 
+
+
+\bigskip\noindent
+\textbf{Solution}:
+
+\noindent
+1) Add a field ``id" equal to 1, to be used as id
+\noindent
+2) Calculate $  DS_{cond} $ with data points respecting the condition expressed by the rule ia). The result is a set of rows having the key, the business\_id equal to 100 and the turnover greater than 1.000.000.
+
+%\bigskip
+%
+%$  DS_{cond}:= DS\#business\_id=100 \ \ \bold{and} \ \ DS\#turnover>1000000 $ 
+
+\noindent
+3) Count data points in the dataset $  DS\_{cond}  $  the result must be greater than zero. The count can be done over the field business\_id because, for every data point, is equal to 100.
+
+%\bigskip
+%$  DS_{r}:=DS_{cond}[\bold{keep} \ \ (business\_id)][\bold{aggregate} \ \ count \ \  business\_id] $  
+%
+%$\quad\qquad\qquad\qquad \bold{rename}[``business\_id" \ \ as \ \ ``count"]>0  $  
+
+\begin{table}
+\begin{center}
+\footnotesize
+\scalebox{1.2}{
+\begin{tabular}{|l|}\hline 
+                                  \\ 
+$ 1)  \ \ DS_{calc}:= DS[\bold{calc} \ \  1 \ \ as \ \ ``id" \ \  role  \ \ `` identifier"] $ \\  \\  
+$ 2)  \ \ DS_{cond}:= DS_{calc}[\bold{filter} \ \ business\_id=100 \ \ \bold{and} \ \ turnover>1000000] $ \\  \\  
+
+$3)  \ \ DS_{r}:=DS_{cond}[\bold{keep} \ \ (id,business\_id)][\bold{aggregate} \ \ count \ \ (business\_id)] $     \\   \\
+$\quad\qquad\qquad [\bold{rename} \ \ business\_id \ \ as \ \ ``count"]>0  $       \\ \\ \hline
+ \end{tabular}}
+\caption{Translation of example ia)}
+\centering
+\label{Tab1-1}
+\end{center}
+\end{table}
+
+
+\bigskip\noindent
+\textbf{ib)} \textbf{DS}: key (identifiers), business\_id(measure), turnover(measure). 
+
+\bigskip\noindent
+\textbf{Rule}: check if exists! x: x.business\_id = 100 AND x.turnover $>$ 1.000.000.
+
+\bigskip\noindent
+\textbf{Solution}:
+
+\noindent
+1-2) Similarly to the example ia), calculate $  DS_{cond} $. 
+
+\noindent
+3) Count data points in $  DS_{cond}  $. The result must be equal to one to verify the uniqueness.
+
+\bigskip
+%
+%$ 1) \ \  DS_{cond}:= DS\#business\_id=100 \ \ and \ \ DS\#turnover>1000000 $ 
+%
+%\bigskip
+%
+%$ 2) \ \  DS\_{r}:=DS_{cond}[\bold{keep} \ \ (business\_id)][\bold{aggregate} \ \ count \ \  business\_id] $  
+%
+%$\quad\qquad \bold{rename}[``business\_id" \ \ as \ \ ``count"]=1  $  
+
+
+
+
+\begin{table}
+%\begin{center}
+\footnotesize
+\scalebox{1.2}{
+\begin{tabular}{|l|}\hline
+                                  \\ 
+$ 1)  \ \ DS_{calc}:= DS[\bold{calc} \ \ 1  \ \  as \ \ ``id" \ \  role  \ \ `` identifier"] $ \\  \\  
+ $  2) \ \  DS_{cond}:= DS_{calc}[\bold{filter} \ \  business\_id=100 \ \ and \ \ turnover>1000000] $ \\  \\ 
+$ 3) \ \  DS_{r}:=DS_{cond}[\bold{keep} \ \ (business\_id)][\bold{aggregate} \ \ count \ \  (business\_id)] $    \\  \\
+$\quad\qquad\qquad [\bold{rename} \ \ business\_id  \ \ as \ \ ``count"]=1  $           \\  \\ \hline
+ \end{tabular}}
+\caption{Translation of example ib)}
+\centering
+\label{Tab1-2}
+%\end{center}
+\end{table}
+
+
+
+\bigskip\noindent
+\textbf{ii)  DS}:person-id (identifier), household-id (identifier), relation\_to\_head (measure), spouse-id (measure). 
+
+\bigskip\noindent
+\textbf{Rule}: forall x: IF x.relation\_to\_head = 4 THEN exists y:x.spouse-id = y.person-id AND y.relation\_to\_head = 3 AND y. household-id = x. household-id.
+
+\bigskip\noindent
+\textbf{Solution}:
+
+\noindent
+1) Calculate all the data points in DS having x.relation\_to\_head = 4
+%
+%\bigskip
+% $  DS_{filter}:=DS[\bold{filter} \ \ relation\_to\_head=4]$ 
+
+
+\noindent
+2) Use the operator \textbf{merge} to find all the data points in DS that respect the rule: \textit{``x.relation\_to\_head = 4  AND x.spouse-id = y.person\_id AND y.relation\_to\_head = 3 AND y. household-id = x. household-id"} .
+
+%\bigskip
+%              $DS_{merge}:=\bold{merge}(  DS \ \   ``DS_x", \ \ DS \ \  ``DS_y",  $ 
+%
+%                $\quad\qquad\qquad \ \  \bold{on}  $ 
+%
+%                $\quad\qquad\qquad\qquad  ( DS_y\#household\text{-}id= DS_x\#household\text{-}id  \ \ \bold{and} $
+%
+%                $\quad\qquad\qquad\qquad   DS_y\#spouse\text{-}id = DS_x\#person\text{-}id  \ \ \bold{and} $
+%
+%            $\quad\qquad\qquad\qquad  DS_y\#relation\_to\_head=3  \ \ \bold{and} $
+%
+%	       $\quad\qquad\qquad\qquad  DS_x\#relation\_to\_head =4 ),$
+%
+%              $\quad\qquad\qquad \ \ \bold{return}  $
+%
+%	       $\quad\qquad\qquad\qquad  (DS_x\#household\text{-}id \ \ \bold{as} \ \  ``household\text{-}id", $
+%
+%	       $\quad\qquad\qquad\qquad DS_x\#person\text{-}id  \ \ \bold{as} \ \  ``person\text{-}id"))$ 
+
+
+\noindent
+3) The difference between all data points in DS having x.relation\_to\_head = 4 and those respecting the rule is the set of data points not respecting the rule.
+%
+%\bigskip
+%                                       $  DS_{not\_exist}:=DS_{filter} \ \ \bold{not\_exist\_in}   \ \ DS_{merge} $   
+%
+%\bigskip
+
+\noindent
+4) Count the data points of point 3). The result must be equal to zero.
+
+%\bigskip
+%                                       $  DS_{count}:=DS_{not\_exist}[keep \ \ (person\text{-}id)][\bold{aggregate} \ \ count \ \  person\text{-}id] \ \ $
+%
+%                                        $\quad\qquad\qquad\qquad \bold{rename}[``person\text{-}id" \ \ as \ \ ``count"]=0  $  
+
+
+\begin{table}
+\begin{center}
+\footnotesize
+\scalebox{1.2}{
+\begin{tabular}{|l|l|l|}\hline
+\\
+                                    $ 1) DS_{filter}:=DS[\bold{filter} \ \ relation\_to\_head=4]$  \\ \\
+              $2) DS_{merge}:=\bold{merge}(  DS \ \   ``DS_x", \ \ DS \ \  ``DS_y",  $ \\
+
+                $\qquad\qquad\quad \ \ \bold{on}  $ \\
+
+                $\qquad\qquad\qquad  ( DS_y\#household\_id= DS_x\#household\_id  \ \  $\\
+
+                $\qquad\qquad\quad \ \ \bold{and} \ \   DS_y\#spouse\_id = DS_x\#person\_id  $\\
+
+            $\qquad\qquad\quad \ \ \bold{and} \ \   DS_y\#relation\_to\_head=3   $\\
+
+	       $\qquad\qquad\quad  \ \ \bold{and} \ \  DS_x\#relation\_to\_head =4 ),$\\
+
+              $\qquad\qquad\quad \ \ \bold{return}  $\\
+
+	       $\qquad\qquad\qquad  (DS_x\#household\_id \ \ \bold{as} \ \  ``household\_id", $\\
+
+	       $\qquad\qquad\quad \ \ DS_x\#person\_id  \ \ \bold{as} \ \  ``person\_id"))$ 
+ \\ \\
+                                                $  3) DS_{not\_exists}:=DS_{filter} \ \ \bold{not\_exists\_in}   \ \ DS_{merge} $      \\  \\ 
+                                      $ 4) DS_{count}:=DS_{not\_exists}[\bold{calc} \ \ 1 \ \ as \ \ ``id" \ \  role  \ \ `` identifier"][\bold{keep} \ \ (id,person\_id)] \ \ $  \\  \\ 
+                                       $\qquad\qquad\qquad[\bold{aggregate} \ \ count \ \  (person\_id)]  =0$   \\  \\ 
+\hline
+\end{tabular}}
+\caption{Translation of example ii)}
+\centering
+\label{Tab1-3}
+\end{center}
+\end{table}
+
+
+\bigskip\noindent
+\textbf{iii) DS}: sex (identifier),age\_group (identifier),avg\_salary (measure). 
+ 
+
+\bigskip\noindent
+\textbf{Rule}: The combination of sex and age group in the data set is unique, i.e., there do not exist two distinct records in the data set with an identical combination of values for sex and age\_group.
+
+
+\bigskip\noindent
+\textbf{Solution}: 
+
+\noindent
+1) Add a field ``id" equal to 1, to be used as id
+\noindent
+2) Calculate the number of avg\_salary over all the combinations of sex and age\_group. Filter the result on avg\_salary$>$1 to keep the combinations duplicated.
+
+\noindent
+3) The result must be equal to zero to exclude duplications.
+
+
+
+
+\begin{table}
+\begin{center}
+\footnotesize
+\scalebox{1.1}{
+\begin{tabular}{|l|l|l|}\hline
+\\
+$ 1) DS_{calc}:= DS[\bold{calc} \ \ 1 \ \ as \ \ ``id" \ \  role  \ \ `` identifier"] $ \\  \\  
+
+
+                                  $  2) DS_{count} := DS[\bold{keep} (avg\_salary,sex,age\_group)]  $
+  \\ \\
+$\qquad\qquad\qquad [\bold{aggregate} \ \ count (avg\_salary)] [\bold{filter} \ \ avg\_salary>1] $
+
+  \\ \\
+$3) DS_{r} :=  DS_{count} [\bold{keep} \ \ (id,avg\_salary)] [\bold{aggregate} \ \ count (avg\_salary)]=0 $
+ \\  \\ 
+\hline
+\end{tabular}}
+\caption{Translation of example iii)}
+\centering
+\label{Tab1-4}
+\end{center}
+\end{table}
+
+
+\bigskip\noindent
+\textbf{iv) DS}:  sex (identifier),age\_group (identifier),avg\_salary (measure). $\bold{DS_{sex}}$=\{m; f\} is the dataset for sex having only one field "sex" that is the identifier and  
+$\bold{DS_{age\_group}}$=\{16 - 20; 21 - 30; 31 - 45; 46 - 60; 61 - 65\}  is the dataset corresponding to the age\_group having only one field "age\_group" that is the identifier.
+
+
+\bigskip\noindent
+\textbf{Rule}: every combination of sex in $DS\_{sex}$ and age\_group in $DS\_{age\_group}$ occurs at least once in the data set. 
+
+\bigskip\noindent
+\textbf{Solution}:
+
+\noindent
+1) Create the Cartesian product of $DS_{sex}$:=\{m,f\} and age\_group  $ DS_{age\_group}$:= \{16 - 20; 21 - 30; 31 - 45; 46 - 60; 61 – 65\}. This can be done using the merge operator. In this case the``on" condition of the operator is (1=1) that assume always value TRUE, this allows to keep all the data points of the Cartesian product given by the merge.
+
+\noindent
+2) Calculate the difference between the cartesian product and the fields sex and age\_group in the dataset DS. 
+
+\noindent
+3) The result must be an empty dataset. To count all the data points in the dataset we need to add a component ``msr\_count" having role measure and assuming value equal to 1.
+
+\begin{table}
+\begin{center}
+\footnotesize
+\scalebox{1.1}{
+\begin{tabular}{|l|l|l|}\hline
+\\
+ 			       $1) DS_{merge}:=\bold{merge}(  DS_{sex} \ \ ``sex", DS_{age\_group}  \ \ ``age",  $ \\ 
+                                       $\quad\qquad\qquad   \bold{on}  $\\ 
+                                       $\quad\qquad\qquad  ( 1=1 ),$\\ 
+                                       $\quad\qquad\qquad  \bold{return}  $\\ 
+			       $\quad\qquad\qquad  (DS_{sex}\#sex \ \ \bold{as} \ \  ``sex", DS_{age\_group}\#age\_group  \ \ \bold{as} \ \  ``age\_group"))$ \\ \\
+                                       $2) DS_{diff}:=DS_{merge} \ \ \bold{setdiff}   \ \  DS[\bold{keep} \ \  (sex,age\_group)] $   \\  \\ 
+                                       $3) DS_{r}:=DS_{diff}[\bold{calc} \ \ 1 \ \  as \ \  ``msr\_count" \ \  role  \ \ "measure"]$   \\  \\ 
+                                       $\quad\qquad\qquad\qquad [\bold{aggregate} \ \ count (msr\_count)]  = 0 $   \\  \\ 
+
+\hline
+\end{tabular}}
+\caption{Translation of example iv)}
+\centering
+\label{Tab1-5}
+\end{center}
+\end{table}
+
+\bigskip\noindent
+\textbf{v) DS} : key (identifier), postal\_code (identifier),city (identifier) 
+
+\bigskip\noindent
+\textbf{Rule}: the functional dependency  postal\_code --$>$ city  should be respected. 
+
+\bigskip\noindent
+\textbf{Solution}:
+
+\noindent
+1) Add to the dataset a field ``msr\_count" that is equal to 1. This field represents the measure on which to use the aggregate operator.
+
+\noindent
+2)Count the occurrences of postal\_code values and the occurrences of the combination of postal\_code and city. These two datasets must be equal over the postal\_code
+
+
+\begin{table}
+\begin{center}
+\footnotesize
+\scalebox{1.1}{
+\begin{tabular}{|l|l|l|}\hline
+\\
+                                      $1) DS\_{count}:= DS[\bold{calc} \ \ 1 \ \  as \ \  ``msr\_count" \ \  role  \ \ "MEASURE"]  $ \\ \\
+
+$2) DS\_{r}:= DS\_{count}[\bold{keep} \ \ (postal\_code,msr\_count)][\bold{aggregate} \ \ count \ \ (msr\_count)]=$ \\ \\
+   
+$ \qquad\qquad DS\_{count}[\bold{keep} \ \ (postal\_code,city, msr\_count)][\bold{aggregate} \ \ count  \ \ (msr\_count)]$ \\ \\
+$ \qquad\qquad [\bold{keep} \ \ (postal\_code,msr\_count)]$ \\ \\
+
+\hline
+\end{tabular}}
+\caption{Translation of example v)}
+\centering
+\label{Tab1-6}
+\end{center}
+\end{table}
+
+
+
+\bigskip\noindent
+\textbf{vi) DS}: code (identifier), weight(measure). 
+
+\bigskip\noindent
+\textbf{Rule}: forall k $>= 1: w(x1. ... .xk)$ equals the sum of $ w(x1.1 ... .xk.i) $ forall $ i >= 0 $
+
+\bigskip\noindent
+\textbf{Solution}:
+
+\noindent
+1) The first step consists in the creation of a hierarchy using the field identifier of the DS. This is not actually possible to do with VTL due to the absence of the some operators for strings like ``Last Index Of". Therefore we suppose to already have a hierarchy as described in the Table 1-7. Using the COICOP\_HC  hierarchy we can aggregate the partials 
+
+\noindent
+2) Compare the aggregations computed using the hierarchy operator with the corresponding ones in the dataset. 
+
+\noindent
+3) Keep only the data points having the result of the equality equal to ``false". The number of these data points must be equal to zero.
+
+
+\bigskip
+\bigskip
+\begin{table}
+\begin{center}
+\footnotesize
+\scalebox{0.89}{
+\begin{tabular}{|l|l|l|l|l|l|l|l|l|l|}\hline
+MAPS FROM   &  MAPS TO  & level  &  Sign  &   Output    \\ \hline  \hline
+1.1    &    1    & 1  &  + &    \\
+1.2    &    1    & 1  &  + &    \\
+1.3    &    1    & 1  &  + &   \\
+1.3.1 &  1.3  & 2  &  + &     \\
+1.3.2 &  1.3  & 2 &  + &      \\
+\hline
+\end{tabular}}
+\caption{ The hierarchy COICOP\_HC}
+\centering
+\label{Tab1-7}
+\end{center}
+\end{table}
+
+
+\begin{table}
+\begin{center}
+\footnotesize
+\scalebox{1.2}{
+\begin{tabular}{|l|l|l|}\hline
+\\
+                                       $1) DS\_{hierarchy}:=\bold{hierarchy}(DS,code,``COICOP\_HC", false)$ \\ \\
+ 			       $2) DS_{cond}:= (DS\_{hierarchy}= DS) [\bold{filter} \ \ weight=``false"] $  \\  \\ 
+			      $3) DS\_{r}:= DS_{cond}[\bold{calc} \ \ 1 \ \  as \ \  ``msr\_count" \ \  role  \ \ "MEASURE"]$\\ \\ 
+   			      $ \qquad\qquad\qquad [\bold{aggregate} \ \  count (msr\_count)]=0$\\ \\ \hline
+\end{tabular}}
+\caption{Translation of example vi)}
+\centering
+\label{Tab1-8}
+\end{center}
+\end{table}
+
+
+\bigskip\noindent
+\textbf{viia) DS}: household\_id(identifier), person\_id (identifier), no\_of\_members.
+
+\bigskip\noindent
+\textbf{Rule}: The value for no\_of\_members must equal to the number of records for each household.
+
+\bigskip\noindent
+\textbf{Solution}:
+
+\noindent
+1)Calculate the total number of members for every family and compare with the number of members of the original dataset.
+
+\noindent
+2) Keep only the data points having the result of the equality equal to ``false". The number of these data points must be equal to zero.
+
+
+\begin{table}
+\begin{center}
+\footnotesize
+\scalebox{1.1}{
+\begin{tabular}{|l|l|l|}\hline
+\\
+ 			       $1) DS_{count}:=(DS[\bold{keep} \ \ (household\_id, no\_of\_members)]$\\ \\ 
+$\qquad\qquad\qquad [\bold{aggregate} \ \ count  \ \ (no\_of\_members)] =$\\ \\ 
+
+$\qquad\qquad\qquad DS[\bold{keep} \ \ (household\_id, no\_of\_members)])$\\ \\ 
+      $ \qquad\qquad\qquad [\bold{filter} \ \ no\_of\_members\_condition=``false"]$\\ \\ 
+
+$2) DS\_{r}:= DS_{count}[\bold{calc} \ \ 1 \ \  as \ \  ``msr\_count" \ \  role  \ \ "MEASURE"]$\\ \\ 
+    $ \qquad\qquad\qquad [\bold{aggregate} \ \  count (msr\_count)]=0$\\ \\ \hline
+
+
+\end{tabular}}
+\caption{Translation of example viia)}
+\centering
+\label{Tab1-9}
+\end{center}
+\end{table}
+
+
+
+\bigskip\noindent
+\textbf{viib) DS}:person-id (identifier), household-id(identifier),no\_of\_members. 
+
+
+\bigskip\noindent
+\textbf{Rule}: forall x: forall n: IF $1 <= n <=$ x.no\_of\_members THEN exists y: x.household-id = y.household-id AND y.person-id = n
+
+\bigskip\noindent
+\textbf{Solution}:
+
+\noindent
+1) Check if in the dataset the person-id has the values between 1 and no\_of\_members. If not, the process can be stopped.
+
+\noindent
+2) Calculate the data points having the number of distinct person-id inside the household. To do this it is necessary to modify person\_id component from identifier to measure. 
+
+\noindent
+3) Filter the dataset obtained in the point 2) for all data points containing duplications. The count of data points must be equal to zero. 
+
+
+\begin{table}
+\begin{center}
+\footnotesize
+\scalebox{1.1}{
+\begin{tabular}{|l|l|l|}\hline
+\\
+   $1)  DS_{check}:= \bold{check}(DS\#person\_id >=1  \ \ \bold{and}$ \\ \\
+ $\qquad\quad\quad\quad DS\#person\_id <= DS\#no\_of\_members)$ \\ \\
+\hline
+
+\\
+ 			       $2) DS_{dist}:= DS[\bold{rename} \ \ (person\_id) \ \ as \ \ ``p\_id"  \ \ role \ \ "measure"]$\\ \\  		
+	       $\qquad\quad\quad [\bold{aggregate} \ \ count\_distinct  \ \ (p\_id)]$\\ \\\hline
+\\
+\\
+ $3) DS_{r}:=DS_{dist}[\bold{filter} \ \ p\_id<>no\_of\_members][ \bold{keep}  \ \ (no\_of\_members)]$ \\ \\
+$\qquad\quad\quad [\bold{aggregate} \ \ count  \ \ (no\_of\_members)] =0$ \\ \\
+
+\hline
+\end{tabular}}
+\caption{Translation of example viib)}
+\centering
+\label{Tab1-10}
+\end{center}
+\end{table}
+
+\section{Conclusions}
+
+\bigskip\noindent
+The application of VTL to the rules defined above raised the following considerations:
+
+\begin{itemize}
+\item the operators for string should be expanded adding for example operators like ``LastIndexOf", ``Replace" and ``Split". These operators could be very useful to be used in creation of hierarchies (see Example vi)). 
+\item In the example iv) has been used the ``merge" operator in a no standard way because the on clause contained a condition always set to true (1=1). This has been done to calculate exactly the Cartesian product of the two dataset. The introduction of this trick can be avoided making the ``on" condition optional.
+
+\item The count and count\_distinct  can only be applied to numeric fields while should be possible also to not numeric fields. Furthermore the count\_distinct clause should be applied to a combination of more than one components not only to one.
+
+\item The aggregate operator allows to execute more than one aggregations (max, min, median etc...) on different measure component but not on the same component because it overwrite the measure component value. This means that if it is necessary to calculate the minimum and the maximum of one measure this can be done only in two different statement. 
+
+
+\noindent
+The merge operator requires to specify always a ``return" value and an alias of datasets in the merge clause while this is not necessary in case there is no ambiguity. This could be simplified leaving the clause return optional and force the use of aliases only if there is ambiguity.
+
+\end{itemize}
+
+To conclude, we've observed that VTL is capable of expressing and calculating validation rules of a wide variety.  This is consistent with the equivalence of languages that are similar to relational algebra (such as VTL) with languages that resemble relational calculus (that was loosely used to specify the examples).  However, what we've also observed is that the translations of the examples were never easy to do.  It took a considerable amount of time to set technical matters, such as choosing the right roles (as an identifying or measure component) for all the columns in the example data sets, in order to make (aggregate) operations work.  This can be due to the fact that, as specified in the Generical Characteristics of VTL[26]:  the language is designed to possibly drive in an active way the execution of the calculation. This makes of VTL a machine-readable language and by consequence more complex than a human description. Also, while VTL is quite capable of doing existential and universal quantification, we have not found a general rule for translating arbitrary combinations of existential and universal quantification, i.e., the translation we have found for example iii is essentially an ad hoc translation. In a first step to possibly simplify the translations of existential and universal quantification, we could introduce the following generic VTL rules: Existential quantification can be seen as the presence of (one or more) records in a dataset respecting a condition. Therefore if we indicate with $DS\_{cond}$ the  dataset resulting after having applied the condition to the
+original dataset, we can define existential quantification according to:
+
+\bigskip
+ $  DS_{Exists}:=DS_{cond}[\bold{calc} \ \ 1 \ \ as  \ \ ``id"  \ \ role  \ \ ``identifier" , $
+
+\hskip 2cm  $  1 \ \ as  \ \ ``msr_{count}"  \ \ role  \ \ ``measure"] $  
+
+
+\hskip 2cm $ [\bold{keep} \ \ (id, msr\_{count})][aggregate\ \ count(msr\_{count})]>0$ 
+
+\bigskip\noindent
+where the uniqueness can be solved using the same rule but set equal to 1:
+
+\bigskip
+ $  DS_{Exists\_U}:=DS_{cond}[\bold{calc} \ \ 1 \ \ as  \ \ ``id"  \ \ role  \ \ ``identifier" , $
+
+\hskip 2cm  $  1 \ \ as  \ \ ``msr_{count}"  \ \ role  \ \ ``measure"] $  
+
+
+\hskip 2cm $ [\bold{keep} \ \ (id, msr\_{count})][aggregate\ \ count(msr\_{count})]=1$ 
+
+\bigskip\noindent
+Universal quantification can be translated as the existence of no records respecting the negation of the rule.  Therefore if we indicate with
+$DS\_{not\_cond}$
+the  dataset  resulting  after  to  have  applied  the  negation  of  the  condition to the original dataset, we can define the universal quantification with the generic rule:
+
+\bigskip
+ $ DS_{ForAll}:=DS_{not\_cond}[\bold{calc} \ \ 1 \ \ as  \ \ ``id"  \ \ role  \ \ ``identifier" , $
+
+\hskip 2cm  $ 1 \ \ as  \ \ ``msr_{count}"  \ \ role  \ \ ``measure"] $  
+
+
+\hskip 2cm $ [\bold{keep} \ \ (id, msr\_{count})][aggregate\ \ count(msr\_{count})]=0$ 
+
+\bigskip\noindent
+Some translations, such as the translation of example v of functional dependencies, need double aggregates, which may not prove to be the most efficient computation, but if the operators count, and count distinct could be also applied to not numeric fields, the rule could be simplified as:
+
+\bigskip
+$DS_{fd}:=DS[\bold{keep} (postal\_code,city)]$  
+
+\hskip 2cm  $  [\bold{aggregate} \ \ count\_distinct(city)]=1 $  
+
+\bigskip\noindent
+
+All in all,  while VTL seems to be complete in the sense that we have found translations  for  all  the  examples,  the  essence  of  the  validation  rule is easily lost in  translation,  cf.,  e.g.,  the  translation  of  example  viib  involving both existential and universal quantification.  This makes the VTL translations, as it is, less suitable for communication purposes. An exception is perhaps the translation of example vi:  this uses the high-level hierarchy construct, as opposed to the rest of the translations that use low-level operations such as counting and comparing results to 0.

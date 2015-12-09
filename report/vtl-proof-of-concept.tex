@@ -1,0 +1,104 @@
+\documentclass[fancyheadings,11pt]{book}
+
+\usepackage[dvips,pdftex,final]{graphicx}
+
+\usepackage{amsfonts}
+\usepackage{epsfig}
+\usepackage{epstopdf}
+\usepackage{enumitem}
+\usepackage{amssymb,amsmath}
+\usepackage{multirow}
+
+%\usepackage{hyperref}
+
+\hyphenation{op-tical net-works semi-conduc-tor}
+\newtheorem{example}{Example}
+\newtheorem{theorem}{Theorem}
+
+\newcommand{\cl}{{\scriptstyle{\it class}}}
+\newcommand{\var}{{\mathrm{var}}}
+
+\DeclareGraphicsExtensions{.eps}
+
+
+\evensidemargin=1.5cm
+\oddsidemargin=1.5cm
+
+\begin{document}
+
+\begin{center}
+\thispagestyle{empty}
+ \ \ \
+
+\bigskip
+\bigskip
+
+{\huge
+\textsc{A VTL PROOF OF CONCEPT}
+}
+
+\vspace{0.5 cm}
+\textsc{\today}
+
+\vspace{1.8 cm}
+\textsc{\Large Mark van der Loo and Michael Schaefer}
+
+\vspace{2 cm}
+\textsc{\Large DRAFT}
+
+\end{center}
+
+\newpage
+\thispagestyle{empty}
+
+\frontmatter
+\tableofcontents
+
+%\chapter*{Preface}
+%\label{preface}
+%\input{preface.tex}
+
+\mainmatter
+
+\chapter{Introduction}
+\label{introduction}
+\input{introduction.tex}
+
+\chapter{Layout of the PoC}
+\label{layoutpoc}
+\noindent
+\input{layoutpoc.tex}
+
+\chapter{Data and Rules}
+\label{datarules}
+\noindent
+\input{datarules.tex}
+
+\chapter{Implementations}
+\label{implementations}
+\noindent
+\input{implementations.tex}
+
+\chapter{Results}
+\label{results}
+\noindent
+\input{results.tex}
+
+\chapter{Conclusion}
+\label{conclusion}
+\noindent
+\input{conclusion.tex}
+
+\backmatter
+
+\renewcommand{\bibname}{References}
+
+\begin{thebibliography}{10}
+\input{bibitems.tex}
+\addcontentsline{toc}{chapter}{References}
+
+\footnotesize
+
+
+\end{thebibliography}
+\end{document}
