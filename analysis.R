@@ -79,13 +79,20 @@ qplot(data=out, x=rule,y=characters, geom="bar",stat="identity",facets=~lang)
 
 
 library(reshape2)
+pdf(file="barplot.pdf",width=8.5,height=5.5)
 A <- reshape2::acast(data=out, formula = rule ~ lang, value.var="characters")
 barplot(t(prop.table(A,1)),horiz=TRUE,las=1,legend.text=TRUE)
+dev.off()
 
 plot(A[,1],type='step')
 lines(A[,2],col='red',type='step')
 lines(A[,3],col='green',type='step')
 
+  pdf(file="boxplot.pdf",width=8.5,height=5.5)
+  boxplot(characters ~ lang, data=dat,las=1
+          , main="Number of characters"
+          ,cex.main=1.2,cex.lab=1.2,cex.axis=1.2)
+  dev.off()
 
 
 
