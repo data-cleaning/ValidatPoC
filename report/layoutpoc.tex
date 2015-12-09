@@ -1,43 +1,58 @@
 \title{Layout of the PoC}
+\textsc{Olav ten Bosch and Michael Schaefer}
+\vspace{0.6cm}
+
 In order to do a proof of concept on a common set of validation cases in two
-different countries it was necessaru to agree on the process being executed.
-For this we made a process diagram, which is shown in figure \textbf{TODO}.
+different countries it was necessary to agree on the process being executed.
+For this we made a process diagram, which is shown in figure \ref{pocprocess}.
 
-The validation rules to be used in the PoC were selected from two sources:
 
- - The repository of about 1800 validation rules used in practice in different
-   countries. These rules were taken from the survey that was returned by
-\textbf{TODO} countries. Note that these validation rules were free text, so they were
-actually expressed in a variety of formats (SQL, natural languags, SAS, Blaise,
-etc.). We selected.
- 
- - The rules mentioned in the "Study on VTL". We have added rules from this
-   study because they express an interesting variety of possibilities in terms
-of validation.
- 
-This implied a set of 18 validation rules of varying complexity.
+\begin{figure}[h!]
+\begin{center}
+\includegraphics[scale=0.5]{20151207ESSnetPoCProcess.PNG} 
+\end{center}
+\caption{Process outline of the VTL proof of concept}
+\label{pocprocess}
+\end{figure}
 
-It would have been optimal if the PoC could use real data to work on. For the
-rules from the survey data could be available at the NSI's, but for the rules
-originating from the study this was not possible. For practical reasons, we
-decided to generate synthetic data sets for all 18 rules.  As the ESSnet noted
-that missing data is a fact of life in statistics, missing fields were added in
-the synthetic data sets as well.  To facilitate checking the correctness of the
-validation to be done, a "expected" field was added to the the data sets which
-has values "valid", "invalid" or "undecided".  Both validation rules and
-synthetic datasets are available on github
+In a first step, we selected a set of 18 validation rules of varying complexity
+to be used in the PoC. Those rules were drawn from two sources:
+
+\begin{itemize}
+\item
+The repository of about 1800 validation rules collected in the project survey on
+data validation in the ESS. Those rules are real-world samples of practically
+applied validation rules expressed in a variety of formats (SQL, natural language,
+SAS, Blaise, etc.).
+\item
+The rules mentioned in the "Study on VTL". We have added rules from this study
+because they express an interesting variety of possibilities in terms of validation.
+\end{itemize}
+
+Next, it was necessary to have data to test the rules against. It would have been
+optimal if the PoC could have used real data to work on. Although there existed real
+data for the rules drawn from the survey data it would at least be hard to get, and
+it was outright impossible for the rules originating from the study. Therefore, we
+decided to generate synthetic data sets for all 18 rules. It was also decided to
+allow for missing values and to specify the expected output of the validation at the
+record and data set level. This is explained in more detail in chapter \ref{datarules}.
+Both validation rules and synthetic data sets are available on GitHub
 (https://github.com/data-cleaning/ValidatPoC).
 
-The 18 test validation rules were translated into VTL 1.0 by a VTL expert.  At
-the side of Germany as well as in the Netherlands a neutral person, not
-involved with the ESSnet but with sufficient knowledge of programming languages
-and the national validation language, was assigned to the task of translating
-the VTL rules into the national dialect.  This person was asked not to have a
-look at the original version of the rule, to better imitate the use of VTL as a
-communication language between international and national organisations.
+The 18 test validation rules were implement in VTL 1.0 by a VTL expert. At the
+NSIs of Germany and the Netherlands a \textit{neutral} person, meaning one not
+involved in the ESSnet and unfamiliar with VTL, but experienced in programming
+and the national validation systems, was assigned to the task of translating
+the VTL rules into the respective national specification language. This person
+was asked to use only the VTL code and the data set definitions as a starting
+point and not to resort to the natural language descriptions of the rules or
+external expertise as far as he or she could avoid. This request was made to
+better emulate the use of VTL as a communication language between international
+and national organisations.
 
-This resulted in implementations of the rules in the eSattistik and validate
-languages. These implementations were used to validate the data sets. Both the
-validation results as well as the three different ways of expressing the rules
-(VTL, eStatistik, validate) were compared.
+This resulted in implementations of the rules in the \textit{eStatistik} and
+\textit{Validate} languages. These implementations were then used in their
+respective runtime environments to validate the synthetic data sets . In a last
+step, the validation results and the three implementation flavours (\textit{VTL},
+\textit{eStatistik}, \textit{Validate}) were compared.
 
