@@ -11,7 +11,154 @@ VTL
 
 \section{Validate}
 
-Validate
+The \code{validate} package \citep{loo:2015} is build on top of the popular and
+R language for statistical computing \citep{rcore:2015}. It is
+implemented as an `R package' -- a strictly standardized way of distributing R
+software, and publicly available through the Comprehensive R Archive Network
+(CRAN). 
+
+\subsubsection{The R language and environment}
+The R language is an open source project, supported by the R foundation seated
+in Vienna, Austria\footnote{\code{https://www.r-project.org/foundation/}}.
+Over the last decade R received a surge in popularity both from research and
+data science and business analytics communities. As a result R currently
+integrates with every popular software system for data storage and processing,
+including Microsoft SQL server, Oracle databases, Tibco Spotfire, Spark, and
+Hadoop to name but a few.  Interaction with other programming environments such
+as \code{C} and \code{C++}, \code{Java}, \code{.Net}, and \code{javascript} are
+readily and freely available as well. The recently established R
+consortium\footnote{\code{https://www.r-consortium.org/}} is an industry
+initiative aimed to streamline and fund further developments in R.
+
+
+The validate package is intended to be a small and powerful package that can be
+used standalone by an analyst using R, or integrated easily into bigger
+projects using one of the facilities mentioned above. As such, it is build with
+strong adherence to the famous Unix
+philosophy\footnote{\code{https://en.wikipedia.org/wiki/Unix\_philosophy}}: do
+one thing, and do it really well.
+
+
+\subsubsection{Approach for validate}
+The philosophy behind the validate package is to reuse existing solutions as
+much as possible. Most importantly, this means that rather than defining a
+language from scratch, the validate package utilizes a subset of existing R
+syntax for defining data validation rules. As an example, consider the following rule from the ESSnet survey \citep{walsdorfer:2015}.
+\begin{quote}
+Check whether the relative occurrence of the category high in a column
+containing values low, high, medium does not exceed 10%.
+\end{quote}
+We assume a simple test dataset, with at least a column called \code{level}.
+\begin{center}
+\begin{tabular}{|c|}
+\hline
+\textbf{level}\\
+\hline
+medium\\
+\hline
+low\\
+\hline
+medium\\
+\hline
+medium\\
+\hline
+high\\
+\hline
+$\vdots$\\
+\hline
+\end{tabular}
+\end{center}
+In validate, the above rule translates to the following syntax.
+\begin{verbatim}
+  counts :=  table(level)
+  counts["high"] < 0.1 * sum(counts)
+\end{verbatim}
+Here, \code{table} is a cross tabulation function that tabulates occurrences
+of values in the \code{level} column. Since this function is a standard R
+feature, tabulation or counting is not part of validate's syntax. Indeed the
+validate package only makes sure that the statements issued by a user are in
+fact validating statements as defined in the Hanbook on validation developed
+for this project \citep{zio:2015}. In particular, this means that every
+(statistical) transformation available to R can be part of a validating
+statements.  With thousands of functions in base R, combined with the more than
+7600 user-contributed packages available on CRAN, this results in a truly rich
+set of validation functionality with a minimal cost of development and
+maintenance to the authors.
+
+Finally, we note that the approach of reusing R syntax for a specific purpose
+is not new. Indeed several authors have created popular packages using the same
+technology. Examples include an implementation of the famous grammar of
+graphics \citep{wilkinson:2006} by \citet{wickham:2014}, the  `formula
+interface' for statistical model specification and a grammar for data
+manipulation by \cite{wickham:2014}. In fact, reusing existing languages, in
+particular functional languages like R, is a well-established technique in
+computer science.  Some key references for developing such embedded domain
+specific languages (DSL) are \cite{fowler:2011} and \cite{gibbons:2015}.
+
+
+\subsubsection{Features and usage}
+Given that statistical functionality comes for free with R, the validate
+package focuses only on features directly related to execution and maintenance
+of validation rules and  analyses and presentation of validation results.
+A few of the features are highlighted below.
+
+\begin{description}
+\item[Rule definition.] Rules can be defined on the R commandline for interactive
+use or in text files that can be stored and manipulated as source code. Rule sets
+may also be stored in a data base, since R by default supports connectivity to 
+(nearly) any database that is (commercially) available.
+
+\item[Rule metadata.] If so desired, rules can be provided with metadata such as
+a time stamp, short and long descriptions, and the origin of the rule.  By
+default, validate uses the widely supported YAML format for metadata
+\citep{ben:2009}, mainly beacause of it's human-readability. Since YAML can be
+translated to formats like XML or JSON at the push of a button, communication
+of rules between different softwares or machines is very easy.
+
+\item[Rule organisation.] Dependencies between text files defining rules are
+supported to allow for easy reuse of rules across different datasets.  A type
+of \code{include} statement allows for hyrachical dependencies between rule
+sets.
+
+\item[Rule execution.] Validation rules can be confronted with any data that can
+be read into R, which encompasses every common data format currently in use.
+Of particular interest is \code{SDMX}, which is supported for R through a
+package of \cite{bondel:2015}.
+
+\item[Rule analyses.] Automatic detection of rule types, variable occurrence and
+the rule dependency graph are currently built in. Add-on packages are currently
+prototyped that will allow for detection of redundancies or contradictory rule
+sets.
+
+\item[Extensibility.] This is borrowed from R's extensibility. Users may define
+functions which can be used in validating statements. The package needs no special
+provisions for that.
+
+\item[Integration.] Integration and communication with other is borrowed from
+the strong features that R already has in this area. Because of its openness,
+many interfaces with existing software and platforms, including commercial
+ones, have been developed.
+
+\item[Analyses of results.] The package has basic functionality to aggregate and
+visualize results of validation  procedures. For example, one can sort records
+according to the number of rule violations (record prioritization) or rules
+according to which have been violated most often. Such summaries, and visualisations
+thereof are important tools for monitoring data quality and the efficacy of 
+data cleaning process steps \citep{pannekoek:2014}.
+\end{description}
+
+The \code{validate} package is the successor of an earlier package of the same
+authors named \code{editrules}. The latter package has been used in production
+for several years at Statistics Netherlands and is being evaluated by several
+other national statistical institutes. At the moment, validate is being
+introduced as editrules' replacement. The validate package is backwards
+compatible with editrules in that it can read the same input files. However,
+validate extends the earlier package by allowing for a much wider range of
+validation rules (editrules was restricted to certain types of in-record
+validation rules that are suitable for an error-localization algorithm).
+
+
+
 
 \section{eSTATISTIK}
 
