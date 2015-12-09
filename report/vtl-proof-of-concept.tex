@@ -8,7 +8,8 @@
 \usepackage{enumitem}
 \usepackage{amssymb,amsmath}
 \usepackage{multirow}
-
+\usepackage{natbib}
+\bibliographystyle{plainnat}
 %\usepackage{hyperref}
 
 \hyphenation{op-tical net-works semi-conduc-tor}
@@ -91,14 +92,14 @@
 
 \backmatter
 
-\renewcommand{\bibname}{References}
+%\renewcommand{\bibname}{References}
 
-\begin{thebibliography}{10}
-\input{bibitems.tex}
-\addcontentsline{toc}{chapter}{References}
+%\begin{thebibliography}{10}
+%\input{bibitems.tex}
+%\addcontentsline{toc}{chapter}{References}
 
-\footnotesize
+%\footnotesize
+\bibliography{references}
 
-
-\end{thebibliography}
+%\end{thebibliography}
 \end{document}
