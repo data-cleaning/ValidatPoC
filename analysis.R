@@ -70,6 +70,7 @@ M <- lapply(names(M), function(lang){
 out <- do.call(rbind,M)
 out <- out[c(4,3,1,2)]
 out <- out[order(out$rule),]
+out$lang <- factor(out$lang,levels=c("VTL","eStatistik","validate"))
 
 # write result to file.
 write.csv(out,file="code_counts.csv")
@@ -79,20 +80,30 @@ qplot(data=out, x=rule,y=characters, geom="bar",stat="identity",facets=~lang)
 
 
 library(reshape2)
-pdf(file="barplot.pdf",width=8.5,height=5.5)
 A <- reshape2::acast(data=out, formula = rule ~ lang, value.var="characters")
-barplot(t(prop.table(A,1)),horiz=TRUE,las=1,legend.text=TRUE)
+
+library(RColorBrewer)
+pal <- brewer.pal(n=3,"Dark2")
+
+pdf(file="barplot.pdf",width=8.5,height=5.5)
+
+barplot(t(prop.table(A[,c(3,1,2)],1)),horiz=TRUE,las=1
+        ,col=pal,ylab="rule no.",cex.axis=1.2,cex.lab=1.2
+        ,main="Relative nr of characters")
+par(xpd=TRUE)
+legend(x=0.3,y=24,legend=c("VTL","eStatistik","Validate"),fill=pal,horiz=TRUE,bty="n",cex=1.2)
+
 dev.off()
 
 plot(A[,1],type='step')
 lines(A[,2],col='red',type='step')
 lines(A[,3],col='green',type='step')
 
-  pdf(file="boxplot.pdf",width=8.5,height=5.5)
-  boxplot(characters ~ lang, data=dat,las=1
+pdf(file="boxplot.pdf",width=8.5,height=5.5)
+  boxplot(characters ~ lang, data=out,las=1
           , main="Number of characters"
           ,cex.main=1.2,cex.lab=1.2,cex.axis=1.2)
-  dev.off()
+dev.off()
 
 
 

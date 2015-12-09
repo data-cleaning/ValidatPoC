@@ -1,4 +1,104 @@
 \title{Data and Rules}
 \label{datarules}
 
-sasasasasa
+The rule set for this proof of concept was chosen to on one hand reflect rules
+that are used in practice and on the other hand cover a wide range of rule
+types.  For this reason, two rules sets were combined. 
+
+The first rule set was obtained by first classifying the rules obtained through
+the ESS survey \citep{walsdorfer:2015}, and picking a rule from each formal
+class defined in the handbook \citep{loo:2015c, zio:2015}. This formal
+classification divides validation rules into ten disjunct classes,
+which can be aggregated in five levels of complexity. 
+The idea of this typology is that each data value
+is identified by a set of four not completely independent keys that label:
+\begin{itemize}
+\item The domain: $U$,
+\item the time of measurement $\tau$. This determines the population,
+\item the selected statistical unit: $u$,
+\item the variable that is measured: $X$.
+\end{itemize}
+Validation functions are labeled according to whether they are a function of a
+single ($s$) or multiple $(m)$ instances of these keys. For example, the rule
+$x > 0$ is labelled $ssss$ and the rule $x + y = z$ is labelled $sssm$  (since
+it involves multiple variables. Since the keys are not completely independent
+there are 10, not 16 independent categories.  As it turned out, nine of the ten
+classes (and four of the five complexity levels) actually occur in rules
+reported to the survey.
+
+The second rule set was obtained by taking nine rules constructed for the study
+of VTL by \cite{gelsema:2015}. These rules were constructed to test the limits
+of what can be expressed by a language, and not necessarily for their
+usefulness. The difference between the rules is mainly based on what operators
+from first order logic are necessary to describe them.
+
+
+\begin{table}[p]
+\begin{tabular}{|l|lllp{0.7\textwidth}|}
+\hline
+&\multicolumn{4}{l|}{\textbf{Rules from the survey}}\\
+\hline
+\textbf{No} & \textbf{Level} & \textbf{Class} & \textbf{Domain} & \textbf{Rule} \\
+\hline
+1 & 0 & $ssss$ & LFS & Number of hours per week usually worked should be between 1 and 80\\
+\hline
+2 & 1 & $sssm$ & SBS & Cost + Profit = Turnover\\
+\hline
+3 & 1 & $ssms$ & Census & Check whether the relative occurrence of the category
+high in a column containing values low, high, medium does not exceed 10\%.\\
+\hline
+4 & 1 & $smss$ & Prices  &price change comparing to previous month and
+corresponding month of the previous year does not exceed 50\%\\
+5 & 2 & $ssmm$ & Census & Age of grandparents – 28 $\geq$ age of their grandchildren\\
+\hline
+6 & 2 & $smsm$ & Agriculture & If a product is out of season, the price and
+quantity must be the same as last month's values.\\
+\hline
+7 & 2 & $smms$ & Prices & The price change of a single item may not influence
+the change in the mean prices by more than 10\%, upwards or downwards.\\
+\hline
+8 & 3 & $msmm$ & Census & Year of birth in household questionnaire must equal
+year of birth in individual questionnaire\\
+\hline
+&\multicolumn{4}{l|}{\textbf{Rules from the Study of VTL}}\\
+\hline
+9  & \multicolumn{4}{p{1.1\textwidth}|}{\code{forall x: x.age >= 0 AND x.age <=
+113}}\\
+\hline
+10 & \multicolumn{4}{p{1.1\textwidth}|}{\code{exists x: x.business-id = 100 AND
+x.turnover $>$ 1.000.000}}\\
+\hline
+11 & \multicolumn{4}{p{1.1\textwidth}|}{\code{exists! x: x.business-id = 100 AND
+x.turnover $>$ 1.000.000}}\\
+\hline
+12 & \multicolumn{4}{p{1.1\textwidth}|}{\code{forall x: IF x.relation\_to\_head
+= 4 THEN exists y: x.spouse-id = y.person-id AND y.relation\_to\_head = 3}}\\
+\hline
+13 & \multicolumn{4}{p{1.1\textwidth}|}{The combination of sex and age group in
+the data set is unique, i.e., there do not exist two distinct records in the
+data set with an identical combination of values for sex and age group.}\\
+\hline
+14 & \multicolumn{4}{p{1.1\textwidth}|}{Every combination of sex and age group
+occurs at least once in the data set.}\\
+\hline
+15 & \multicolumn{4}{p{1.1\textwidth}|}{If two records have the same postal
+code, they must have the same value for city}\\
+\hline
+16 & \multicolumn{4}{p{1.1\textwidth}|}{\code{forall k >= 1: w(x1. ... .xk)
+equals the sum of w(x1. ... .xk.i) forall i $>=$ 0}}\\
+\hline
+17 & \multicolumn{4}{p{1.1\textwidth}|}{The value for no\_of\_household\_members
+must equal the number of records for each household}\\
+\hline
+18 & \multicolumn{4}{p{1.1\textwidth}|}{
+\code{forall x: forall n:
+  IF 1 $<=$ n $<=$ x.no\_of\_household\_members
+  THEN exists y: 
+    x.household-id $=$ y.household-id AND y.person-id $=$ n
+}}\\
+\hline
+\end{tabular}
+\caption{Overview of rules used in the proof of concept}
+\label{tab:rules}
+\end{table}
+
