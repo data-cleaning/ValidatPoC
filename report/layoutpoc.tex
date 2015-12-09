@@ -1,4 +1,43 @@
 \title{Layout of the PoC}
+In order to do a proof of concept on a common set of validation cases in two
+different countries it was necessaru to agree on the process being executed.
+For this we made a process diagram, which is shown in figure \textbf{TODO}.
 
+The validation rules to be used in the PoC were selected from two sources:
 
-sasasasa
+ - The repository of about 1800 validation rules used in practice in different
+   countries. These rules were taken from the survey that was returned by
+\textbf{TODO} countries. Note that these validation rules were free text, so they were
+actually expressed in a variety of formats (SQL, natural languags, SAS, Blaise,
+etc.). We selected.
+ 
+ - The rules mentioned in the "Study on VTL". We have added rules from this
+   study because they express an interesting variety of possibilities in terms
+of validation.
+ 
+This implied a set of 18 validation rules of varying complexity.
+
+It would have been optimal if the PoC could use real data to work on. For the
+rules from the survey data could be available at the NSI's, but for the rules
+originating from the study this was not possible. For practical reasons, we
+decided to generate synthetic data sets for all 18 rules.  As the ESSnet noted
+that missing data is a fact of life in statistics, missing fields were added in
+the synthetic data sets as well.  To facilitate checking the correctness of the
+validation to be done, a "expected" field was added to the the data sets which
+has values "valid", "invalid" or "undecided".  Both validation rules and
+synthetic datasets are available on github
+(https://github.com/data-cleaning/ValidatPoC).
+
+The 18 test validation rules were translated into VTL 1.0 by a VTL expert.  At
+the side of Germany as well as in the Netherlands a neutral person, not
+involved with the ESSnet but with sufficient knowledge of programming languages
+and the national validation language, was assigned to the task of translating
+the VTL rules into the national dialect.  This person was asked not to have a
+look at the original version of the rule, to better imitate the use of VTL as a
+communication language between international and national organisations.
+
+This resulted in implementations of the rules in the eSattistik and validate
+languages. These implementations were used to validate the data sets. Both the
+validation results as well as the three different ways of expressing the rules
+(VTL, eStatistik, validate) were compared.
+
