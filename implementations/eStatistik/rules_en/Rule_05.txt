@@ -1,0 +1,11 @@
+DECLARE rc, tmp_age
+tmp_age := EMPTY
+
+  tmp_age := DATASET mat_Rule05lb (person_id = grandchild_of ; age)
+
+IF tmp_age - 28 < age
+ THEN rc := 1
+END
+
+
+RETURN rc

@@ -1,0 +1,3 @@
+IF grandchild_of /= EMPTY AND age /= EMPTY
+THEN CHECK Rule_05
+END

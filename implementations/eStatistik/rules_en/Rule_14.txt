@@ -1,0 +1,19 @@
+DECLARE rc, tmp_age_group, tmp_gender,
+    male_child, female_child, male_adult, female_adult, male_senior, female_senior
+rc,male_child, female_child,male_adult,female_adult,male_senior,female_senior  := {0,0,0,0,0,0,0}
+
+  FOR EVERY tmp_gender , tmp_age_group IN DATASET mat_Rule14 (gender , age_group)
+   IF tmp_gender = 'male'   AND tmp_age_group = 'child'  THEN male_child    := male_child    + 1 END
+   IF tmp_gender = 'female' AND tmp_age_group = 'child'  THEN female_child  := female_child  + 1 END
+   IF tmp_gender = 'male'   AND tmp_age_group = 'adult'  THEN male_adult    := male_adult    + 1 END
+   IF tmp_gender = 'female' AND tmp_age_group = 'adult'  THEN female_adult  := female_adult  + 1 END
+   IF tmp_gender = 'male'   AND tmp_age_group = 'senior' THEN male_senior   := male_senior   + 1 END
+   IF tmp_gender = 'female' AND tmp_age_group = 'senior' THEN female_senior := female_senior + 1 END
+
+  END
+    IF male_child = 0 OR female_child = 0 OR male_adult = 0 OR female_adult = 0 OR male_senior = 0 OR female_senior = 0 
+     THEN rc := 1
+    END
+
+
+RETURN rc

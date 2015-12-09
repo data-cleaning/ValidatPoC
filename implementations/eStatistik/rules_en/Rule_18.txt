@@ -1,0 +1,11 @@
+DECLARE rc, tmp_person_id, x1
+rc := 0
+
+LOOP FOR x1 := 1 UNTIL x1 > members
+     IF NOT SEQUENCE (household_id, x1) IN DATASET personen (household_id , person_id )
+      THEN rc := 1
+     END
+
+  END
+
+RETURN rc

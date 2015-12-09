@@ -1,0 +1,15 @@
+DECLARE rc, s1  , z1 , total
+rc,z1,total := {0,0,0}
+
+FOR EVERY s1  IN DATASET mat_Rule03 (level1)
+
+   IF s1 /= 'NA' THEN  total := total + 1 END "count records that contain any valid value "
+   IF s1  = 'high' THEN z1 := z1 + 1   END    "count records that contain value "high"
+
+END
+
+"Check relative occurrence of value 'high'"
+
+IF z1 > total * 0.1 THEN rc := 1 END
+
+RETURN rc

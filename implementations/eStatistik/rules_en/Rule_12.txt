@@ -1,0 +1,18 @@
+DECLARE rc,tmp_relation_to_head
+rc := {0}
+tmp_relation_to_head := EMPTY
+
+IF relation_to_head ='4'
+ THEN   
+
+   IF NOT spouse_id IN DATASET mat_Rule12 (person_id)
+    THEN rc := 1
+     ELSE  tmp_relation_to_head :=  DATASET mat_Rule12 (person_id = spouse_id ; relation_to_head )
+
+      IF tmp_relation_to_head /= '3'
+       THEN  rc := 1
+      END
+   END
+
+END
+RETURN rc

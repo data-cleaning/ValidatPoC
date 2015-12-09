@@ -1,0 +1,3 @@
+IF postcode /= EMPTY
+ THEN CHECK Rule_15
+END

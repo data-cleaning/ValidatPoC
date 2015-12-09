@@ -1,0 +1,14 @@
+DECLARE rc, tmp_turnover 
+rc := 1
+tmp_turnover := EMPTY
+
+FOR EVERY tmp_turnover IN DATASET mat_Rule10 (business_id = '100' ; turnover )
+
+
+  IF tmp_turnover /= EMPTY AND tmp_turnover > 1000000
+   THEN rc := 0
+  END
+
+END
+
+RETURN rc

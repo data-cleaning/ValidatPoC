@@ -1,0 +1,1 @@
+season = 'out' AND (price_t /= price_t_1 OR quantity_t /= quantity_t_1)

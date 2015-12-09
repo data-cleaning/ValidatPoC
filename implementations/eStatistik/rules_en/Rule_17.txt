@@ -1,0 +1,12 @@
+DECLARE rc, tmp_dummy, counter
+rc, counter  := {0,0}
+
+  FOR EVERY tmp_dummy IN DATASET personen (household_id = household_id ; person_id )
+   counter := counter + 1
+  END
+
+   IF counter /= members
+     THEN rc := 1
+    END
+
+RETURN rc

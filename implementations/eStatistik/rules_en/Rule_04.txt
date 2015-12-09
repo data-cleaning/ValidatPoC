@@ -1,0 +1,5 @@
+(price_t = EMPTY OR price_t_1 = EMPTY OR price_Y_1 = EMPTY)
+OR
+FUNCTION ABSOLUTEVALUE (price_t - price_t_1)  > price_t_1 * 0.5
+OR
+FUNCTION ABSOLUTEVALUE (price_t - price_Y_1)  > price_Y_1 * 0.5
