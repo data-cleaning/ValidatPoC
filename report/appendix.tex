@@ -1,0 +1,973 @@
+
+\subsubsection*{  Rule 1: Natural language}
+\begin{quote}
+
+
+Number of hours per week usually worked should be between 1 and 80
+
+Missing data results in undecided.
+
+
+\end{quote}
+\subsubsection*{The VTL implementation}
+\begin{verbatim}
+  DS= person-id, hours_worked
+
+  DSr:= DS#hours_worked between 1 and 80
+  /* In case a value in hours_worked is NULL the value returned will be NULL */
+  .
+\end{verbatim}
+\subsubsection*{The eStatistik implementation}
+\begin{verbatim}
+  NICHT hours_worked IN REIHE (1 ++ 80)
+\end{verbatim}
+\subsubsection*{The validate implementation.}
+\begin{verbatim}
+  # rule_01:
+  hours_worked >= 1 & hours_worked <= 80
+\end{verbatim}
+
+
+\newpage
+
+\subsubsection*{  Rule 2: Natural language}
+\begin{quote}
+
+
+cost + profit = turnover
+
+Missing data results in undecided
+
+
+
+\end{quote}
+\subsubsection*{The VTL implementation}
+\begin{verbatim}
+  DS= business-id, cost, profit, turnover
+
+  DSr:= (DS#cost + DS#profit) = DS#turnover
+\end{verbatim}
+\subsubsection*{The eStatistik implementation}
+\begin{verbatim}
+  turnover /= cost + profit
+\end{verbatim}
+\subsubsection*{The validate implementation.}
+\begin{verbatim}
+  # rule_02:
+  cost + profit == turnover
+\end{verbatim}
+
+
+\newpage
+
+\subsubsection*{  Rule 3: Natural language}
+\begin{quote}
+
+
+Check whether the relative occurrence of the category \code{high} in a column containing values \code{low}, \code{high}, \code{medium} does not exceed 10\%.
+
+Missing values are ignored when determining the relative occurrences.
+
+
+\end{quote}
+\subsubsection*{The VTL implementation}
+\begin{verbatim}
+  DS=level
+
+  DScalc:= DS[calc 1 as "temp_id" role "identifier"", 1 as "msrcount" role
+"measure"]
+  DSr:= DScalc[filter level="high"][aggregate count(msrcount)]<=(( DScalc
+[aggregate count (msrcount)])*0.1)
+\end{verbatim}
+\subsubsection*{The eStatistik implementation}
+\begin{verbatim}
+  VAR rueck, s1 , z1 , total
+  rueck,z1,total := {0,0,0}
+
+  FUER JEDES s1 IN MATERIAL mat_Rule03 (level1)
+
+  WENN s1 /= 'NA' DANN total := total + 1 ENDE "Gesamtsätze ohne LEER Werte (NA)"
+  WENN s1 = 'high' DANN z1 := z1 + 1 ENDE "Anz. high "
+
+  ENDE
+
+  "Auswertung"
+  WENN z1 > total * 0.1 DANN rueck := 1 ENDE
+
+  RUECKGABE rueck
+\end{verbatim}
+\subsubsection*{The validate implementation.}
+\begin{verbatim}
+  # def_03:
+  counts := table(level)
+
+  # rule_03:
+  counts["high"] < 0.1 * sum(counts)
+\end{verbatim}
+
+
+\newpage
+
+\subsubsection*{  Rule 4: Natural language}
+\begin{quote}
+
+
+Price change between the current month and the previous month should not exceed 50\% (taking the previous value as 100\%). The same must hold for the price change between the current month and the same month last year.
+
+Missing values result in invalid
+
+
+
+\end{quote}
+\subsubsection*{The VTL implementation}
+\begin{verbatim}
+  DS=id, item, price_t, price_t-1, price_Y-1
+
+  DSr1:= ((DS#price_t - DS#price_t-1) <= (DS#price_t-1 * 0.5)) and ((DS#price_t +
+DS#price_Y-1) <= (DS#price_Y-1 * 0.5))
+
+  /* if a NULL value is in one of the terms of the AND the result will be as
+indicated in 3VL, Three-valued logic see page 42 VTL-part1 */
+\end{verbatim}
+\subsubsection*{The eStatistik implementation}
+\begin{verbatim}
+  (price_t = LEER ODER price_t_1 = LEER ODER price_Y_1 = LEER)
+  ODER
+  FUNKTION ABSOLUTWERT (price_t - price_t_1) > price_t_1 * 0.5
+  ODER
+  FUNKTION ABSOLUTWERT (price_t - price_Y_1) > price_Y_1 * 0.5
+\end{verbatim}
+\subsubsection*{The validate implementation.}
+\begin{verbatim}
+  # rule_04:
+  (price_t - price_tmin1) <= 0.5 * price_tmin1 & (price_t - price_Ymin1) <=
+  0.5 * price_Ymin1
+\end{verbatim}
+
+
+\newpage
+
+\subsubsection*{  Rule 5: Natural language}
+\begin{quote}
+
+
+Age of grandparents $–$ $28$ $\leq$ age of their grandchildren
+
+Missing values result in undecided. Results are reported per grandchild.
+
+
+
+\end{quote}
+\subsubsection*{The VTL implementation}
+\begin{verbatim}
+  DS= id(identifier), age, grandchild_of
+
+  DSmerge:=merge(DS as "DSgp",DS as "DSgc"
+  on (DSgp#person-id= DSgc# grandchild_of),
+  return (DSgc#person-id as "person-id", DSgc#age as "age"", DSgp#age as "gp_age",
+DSgc#grandchild_of as "grandchild_of")
+
+  DSr:= (DSmerge#gp_age-28) >= DSmerge#age
+
+  DSinvalid:=DS setdiff DSr[keep(person-id,age,grandchild_of)]
+
+\end{verbatim}
+\subsubsection*{The eStatistik implementation}
+\begin{verbatim}
+  VAR rueck, hf_age
+  hf_age := LEER
+
+  hf_age := MATERIAL mat_Rule05lb (person_id = grandchild_of ; age)
+
+  WENN hf_age - 28 < age
+  DANN rueck := 1
+  ENDE
+
+
+  RUECKGABE rueck
+\end{verbatim}
+\subsubsection*{The validate implementation.}
+\begin{verbatim}
+  # def_age_gp:
+  age_gp := age[match(grandchild_of, person_id)]
+
+  # rule_04:
+  age_gp - 28 >= age
+\end{verbatim}
+
+
+\newpage
+
+\subsubsection*{  Rule 6: Natural language}
+\begin{quote}
+
+
+If a product is out of season, the price and quantity must be the same as last month's values.
+
+Missing values result in undecided.
+
+
+\end{quote}
+\subsubsection*{The VTL implementation}
+\begin{verbatim}
+  DS= product_id, season, price_t, quantity_t, price_t-1, quantity_t-1
+
+  DSout:=DS[filter season="out"]
+  DSr:= (DSout#price_t= DSout#price_t-1) and (DSout#quantity_t=
+DSout#quantity_t-1)
+
+  /* if a NULL value is in one of the terms of the AND the result will be as
+indicated in 3VL, Three-valued logic
+  see page 42 VTL-part1 */
+\end{verbatim}
+\subsubsection*{The eStatistik implementation}
+\begin{verbatim}
+  season = 'out' UND (price_t /= price_t_1 ODER quantity_t /= quantity_t_1)
+\end{verbatim}
+\subsubsection*{The validate implementation.}
+\begin{verbatim}
+  # rule_06:
+  if (season == "out") price_t == price_tmin1 && quantity_t ==
+  quantity_tmin1
+\end{verbatim}
+
+
+\newpage
+
+\subsubsection*{  Rule 7: Natural language}
+\begin{quote}
+
+
+The price change of a single item may not influence the change in the mean prices by more than 10\\%, upwards or downwards.
+
+Explanation in detail. Let \code{m(t)} denote the mean price at time \code{t} and \code{m(t-1)} the mean time at time \code{t-1}.
+The change in mean prices is given by \code{d(t,t-1) = abs(m(t) - m(t-1))}. Also define \code{m(t,i)}, which is the
+mean price at time \code{t}, but the price of the \code{i}th item is set equal to the price at time \code{t-1}. Accordingly, we write \code{d(t,t-1,i) = abs(m(t,i)-m(t-1))}. The rule now states that
+\begin{verbatim}
+0.9 <= d(t,t-1,i)/d(t,t-1) <= 1.1
+\end{verbatim}
+
+We assume all data is available.
+
+
+\end{quote}
+\subsubsection*{The VTL implementation}
+\begin{verbatim}
+  DS=product-id(identifier),price_t , price_tm1
+  DScalc:= DS[calc 1 as "temp_id" role "identifier"][keep (temp_id, price_t ,
+price_mt1)]
+  DSmt:= DScalc [keep (temp_id,price_t)][aggregate avg(price_t)]
+  DSmt_1:= DScalc [keep (temp_id,price_mt1)][aggregate avg(price_mt1)]
+  DScount:=DS[keep (temp_id,price_t)][aggregate count(price_t)]
+  DSr:=(abs(DSmt - DSmt_1 + (DScalc#price_mt1- DScalc#price_t)/DScount))/abs(DSmt-
+DSmt_1)) between 0.9 and 1.1
+\end{verbatim}
+\subsubsection*{The eStatistik implementation}
+\begin{verbatim}
+  VAR rueck, d_t, d_tm1, s_t, s_tm1, d_t_neu, t, tm1, counter, DSr
+  rueck, d_t, d_tm1, s_t, s_tm1, d_t_neu, counter := {0,0,0,0,0,0,0}
+
+  "Summenbildung SP2 und SP3 über alle Sätze "
+  FUER JEDES t, tm1 IN MATERIAL mat_Rule07lb (price_t, price_tm1)
+  counter := counter + 1
+  s_t := s_t + t
+  s_tm1 := s_tm1 + tm1
+
+  ENDE
+
+  "Berechnung:"
+  WENN counter > 0
+
+  DANN
+  "Durchschnittberechnung"
+  d_t := s_t / counter
+  d_tm1 := s_tm1 / counter
+  "Neuer Durchschnittswert"
+  d_t_neu := (s_t - price_t + price_tm1) / counter
+
+  "Formel"
+  DSr := FUNKTION ABSOLUTWERT(d_t - d_tm1) / FUNKTION ABSOLUTWERT(d_t_neu - d_tm1)
+
+
+  WENN NICHT DSr IN REIHE (0.9 ++ 1.1)
+  DANN rueck := 1
+  ENDE
+
+  ENDE
+
+  RUECKGABE rueck
+\end{verbatim}
+\subsubsection*{The validate implementation.}
+\begin{verbatim}
+  # def_ratio:
+  ratio := abs(mean(price_t) - mean(price_tm1) + (price_tm1 -
+  price_t)/length(price_t)/(mean(price_t) - mean(price_tm1)))
+
+  # rule_07:
+  ratio >= 0.9 && ratio <= 1.1
+\end{verbatim}
+
+
+\newpage
+
+\subsubsection*{  Rule 8: Natural language}
+\begin{quote}
+
+
+Year of birth in household questionnaire must equal year of birth in individual questionnaire
+
+Missing values result in undecided.
+
+Results are reported per person.
+
+
+\end{quote}
+\subsubsection*{The VTL implementation}
+\begin{verbatim}
+  DS_h= household-id, person-id(identifier),person, year_of_birth
+  DS_p= person-id(identifier),person, year_of_birth, gender
+
+  DSr:= DS_h#year_of_birth=DS_p#year_of_birth
+\end{verbatim}
+\subsubsection*{The eStatistik implementation}
+\begin{verbatim}
+  VAR rueck
+  rueck := 0
+
+  WENN NICHT REIHE (person_id , person , year_of_birth)
+  IN MATERIAL Haushalt (person_id , person , year_of_birth)
+  DANN rueck := 1
+  ENDE
+
+  RUECKGABE rueck
+\end{verbatim}
+\subsubsection*{The validate implementation.}
+\begin{verbatim}
+  # rule_08:
+  person_id == person$person_id
+\end{verbatim}
+
+
+\newpage
+
+\subsubsection*{  Rule 9: Natural language}
+\begin{quote}
+
+
+The \code{forall} quantifyer signifies that the rule is satisfied for a data set when \emph{all} records satisfy the rule.
+
+\begin{verbatim}
+forall x: x.age >= 0 AND x.age <= 113
+\end{verbatim}
+
+Missing values result in undecided.
+
+
+\end{quote}
+\subsubsection*{The VTL implementation}
+\begin{verbatim}
+  DS=person-id(identifier), age
+
+  DScalc:= DS[calc 1 as "temp_id" role "identifier"][keep (temp_id, age)]
+
+  DScond:= DScalc[filter age between 0 and 113]
+
+  DSr:=DScond[aggregate count(age)]= DScalc[aggregate count(include NULLS age)]
+
+\end{verbatim}
+\subsubsection*{The eStatistik implementation}
+\begin{verbatim}
+  VAR hf_age, rueck, hf_decided, hf_invalid
+  rueck,hf_decided, hf_invalid := {0,0,0}
+  hf_age := LEER
+  FUER JEDES hf_age IN MATERIAL mat_Rule09 (age)
+
+  WENN hf_age = LEER
+  DANN hf_decided := 1
+
+  SONST
+  WENN NICHT hf_age IN REIHE (0++113)
+  DANN hf_invalid := 1
+  ENDE
+  ENDE
+  ENDE
+
+  WENN hf_decided = 0 UND hf_invalid = 1
+  DANN rueck := 1
+  ENDE
+
+  RUECKGABE rueck
+\end{verbatim}
+\subsubsection*{The validate implementation.}
+\begin{verbatim}
+  # rule_09:
+  all(age >= 0 && age <= 113)
+\end{verbatim}
+
+
+\newpage
+
+\subsubsection*{  Rule 10: Natural language}
+\begin{quote}
+
+
+\begin{verbatim}
+exists x: x.business-id = 100 AND x.turnover > 1.000.000
+\end{verbatim}
+
+We assume all data is available.
+
+
+\end{quote}
+\subsubsection*{The VTL implementation}
+\begin{verbatim}
+  DScalc:= DS[calc 1 as "temp_id" role "identifier "]
+  DScond:= DScalc[filter business_id=100 and turnover>1000000]
+  DSr:= DScond[keep (temp_id,business_id)][aggregate count (business_id)] > 0
+\end{verbatim}
+\subsubsection*{The eStatistik implementation}
+\begin{verbatim}
+  VAR rueck, hf_turnover
+  rueck := 1
+  hf_turnover := LEER
+
+  FUER JEDES hf_turnover IN MATERIAL mat_Rule10 (business_id = '100' ; turnover )
+
+
+  WENN hf_turnover /= LEER UND hf_turnover > 1000000
+  DANN rueck := 0
+  ENDE
+
+  ENDE
+
+  RUECKGABE rueck
+\end{verbatim}
+\subsubsection*{The validate implementation.}
+\begin{verbatim}
+  # rule_10:
+  any(business_id == 100 & turnover > 1e+06)
+\end{verbatim}
+
+
+\newpage
+
+\subsubsection*{  Rule 11: Natural language}
+\begin{quote}
+
+
+The \code{exists!} quantifier signifies 'there exists exactly one'.
+
+
+\begin{verbatim}
+exists! x: x.business-id = 100 AND x.turnover > 1.000.000
+\end{verbatim}
+
+A missing value resuls in undecided, except when the truth value can be determined regardless of the missing value.
+
+
+
+\end{quote}
+\subsubsection*{The VTL implementation}
+\begin{verbatim}
+  DScalc:= DS[calc 1 as "temp_id" role "identifier"]
+  DScond:= DScalc[filter business_id=100 and turnover>1000000]
+  DSr:= DScond[keep (temp_id,business_id)][aggregate count (business_id)] = 1
+\end{verbatim}
+\subsubsection*{The eStatistik implementation}
+\begin{verbatim}
+  VAR rueck, hf_turnover, hf_undecided, hf_count
+  rueck,hf_undecided, hf_count := {1,0,0}
+  hf_turnover := LEER
+
+  FUER JEDES hf_turnover IN MATERIAL mat_Rule11 (business_id = '100' ; turnover )
+
+  WENN hf_turnover = LEER
+  DANN hf_undecided := 1
+
+  SONST
+  WENN hf_turnover > 1000000
+  DANN hf_count := hf_count + 1
+  ENDE
+  ENDE
+  ENDE
+
+  WENN hf_undecided = 1 ODER hf_count = 1
+  DANN rueck := 0
+  ENDE
+
+
+
+  RUECKGABE rueck
+\end{verbatim}
+\subsubsection*{The validate implementation.}
+\begin{verbatim}
+  # rule_11:
+  sum(business_id == 100 & turnover > 1e+06) == 1
+\end{verbatim}
+
+
+\newpage
+
+\subsubsection*{  Rule 12: Natural language}
+\begin{quote}
+
+
+\begin{verbatim}
+forall x: 
+  IF x.relation_to_head = 4 
+  THEN exists y:
+    x.spouse-id = y.person-id AND y.relation_to_head = 3
+\end{verbatim}
+
+We assume all data is available.
+
+
+\end{quote}
+\subsubsection*{The VTL implementation}
+\begin{verbatim}
+  DS=person-id(identifier), spouse-id, relation_to_head
+
+  DSfilter := DS[filter relation_to_head = 4]
+  DSmerge := merge(DS "DSx",DS "DSy",
+  on
+  (DSy#spouse-id = DSx#person-id and DSy#relation_to_head = 3 and
+DSx#relation_to_head = 4)
+  return
+  (DSx#person-id as "person-id"))
+
+  DSnot_exists := DSfilter not_exists_in DSmerge
+
+  DScount := DSnot_exists[calc 1 as "id" role "identifier"][keep (id, person_id)]
+[aggregate count (person_id)] = 0
+\end{verbatim}
+\subsubsection*{The eStatistik implementation}
+\begin{verbatim}
+  VAR rueck,hf_relation_to_head
+  rueck := {0}
+  hf_relation_to_head := LEER
+
+  WENN relation_to_head ='4'
+  DANN
+
+  WENN NICHT spouse_id IN MATERIAL mat_Rule12 (person_id)
+  DANN rueck := 1
+  SONST hf_relation_to_head := MATERIAL mat_Rule12 (person_id = spouse_id ;
+relation_to_head )
+
+  WENN hf_relation_to_head /= '3'
+  DANN rueck := 1
+  ENDE
+  ENDE
+
+  ENDE
+  RUECKGABE rueck
+\end{verbatim}
+\subsubsection*{The validate implementation.}
+\begin{verbatim}
+  # def_rel_4:
+  rel_4 := person_id[relation_to_head == 4]
+
+  # def_rel_3:
+  spouse_of_rel_3 := spouse[relation_to_head == 3]
+
+  # rule_12:
+  all(rel_4 %in% spouse_of_rel_3)
+\end{verbatim}
+
+
+\newpage
+
+\subsubsection*{  Rule 13: Natural language}
+\begin{quote}
+
+
+The combination of sex and age group in the data set is unique, i.e., there do not exist two distinct records in
+the data set with an identical combination of values for sex and age group.
+
+- sex groups: \code{male}, \code{female}
+- age groups: \code{child}, \code{adult}, \code{senior} 
+
+We assume all data is available.
+
+
+\end{quote}
+\subsubsection*{The VTL implementation}
+\begin{verbatim}
+  DS= person-id(identifier),gender(identifier),age-group(identifier)
+  /*
+  * gender: male, female
+  * age-groups: child, adult, senior
+  */
+  DScalc := DS[calc 1 as "id" role "identifier", 1 as "msrcount" role "measure"]
+  DScount := DS[keep(id, msrcount, gender, age_groups)][aggregate count(msrcount)]
+[filter msrcount > 1]
+  DSr := DScount [keep (id, msrcount)][aggregate count(msrcount)] = 0
+\end{verbatim}
+\subsubsection*{The eStatistik implementation}
+\begin{verbatim}
+  VAR rueck, dummy, counter
+  rueck, counter := {0,0}
+
+  FUER JEDES dummy IN MATERIAL mat_Rule13 (gender = gender, age_group =
+age_group ; person_id )
+  counter := counter + 1
+
+
+  WENN counter /= 1
+  DANN rueck := 1
+  ENDE
+
+  ENDE
+  RUECKGABE rueck
+\end{verbatim}
+\subsubsection*{The validate implementation.}
+\begin{verbatim}
+  # def_counts:
+  counts := table(gender, age_group)
+
+  # rule_13:
+  counts <= 1
+\end{verbatim}
+
+
+\newpage
+
+\subsubsection*{  Rule 14: Natural language}
+\begin{quote}
+
+
+Every combination of sex and age group occurs at least once in the data set.
+
+- sex groups: \code{male}, \code{female}
+- age groups: \code{child}, \code{adult}, \code{senior} 
+
+We assume all data is available.
+
+
+\end{quote}
+\subsubsection*{The VTL implementation}
+\begin{verbatim}
+  DS=person-id(identifier), name, gender(identifier), age-group(identifier)
+  DSgender= gender(identifier) {male, female}
+  DSage =age-group(identifier) {child, adult, senior}
+  /*
+  * gender: male, female
+  * age-groups: child, adult, senior
+  */
+  DSmerge := merge(DSgender "DSgender" ,DSage "DSage" ,
+  on
+  (1 = 1)
+  return
+  (DSgender#gender as "gender",DSage #age-group as "age-group"))
+  DSdiff := DSmerge setdiff DS[keep (gender, age-group)]
+  DSr := DSdiff [calc 1 as "msrcount" role "measure"][aggregate count(msrcount)] =
+0
+\end{verbatim}
+\subsubsection*{The eStatistik implementation}
+\begin{verbatim}
+  VAR rueck, hf_age_group, hf_gender,
+  male_child, female_child, male_adult, female_adult, male_senior, female_senior
+  rueck,male_child,
+female_child,male_adult,female_adult,male_senior,female_senior :=
+{0,0,0,0,0,0,0}
+
+  FUER JEDES hf_gender , hf_age_group IN MATERIAL mat_Rule14 (gender , age_group)
+  WENN hf_gender = 'male' UND hf_age_group = 'child' DANN male_child := male_child
++ 1 ENDE
+  WENN hf_gender = 'female' UND hf_age_group = 'child' DANN female_child :=
+female_child + 1 ENDE
+  WENN hf_gender = 'male' UND hf_age_group = 'adult' DANN male_adult := male_adult
++ 1 ENDE
+  WENN hf_gender = 'female' UND hf_age_group = 'adult' DANN female_adult :=
+female_adult + 1 ENDE
+  WENN hf_gender = 'male' UND hf_age_group = 'senior' DANN male_senior :=
+male_senior + 1 ENDE
+  WENN hf_gender = 'female' UND hf_age_group = 'senior' DANN female_senior :=
+female_senior + 1 ENDE
+
+  ENDE
+  WENN male_child = 0 ODER female_child = 0 ODER male_adult = 0 ODER female_adult
+= 0 ODER male_senior = 0 ODER female_senior = 0
+  DANN rueck := 1
+  ENDE
+
+
+  RUECKGABE rueck
+\end{verbatim}
+\subsubsection*{The validate implementation.}
+\begin{verbatim}
+  # def_counts:
+  counts := table(gender, age_group)
+
+  # rule_gender:
+  gender %in% c("male", "female")
+
+  # rule_ag:
+  age_group %in% c("child", "adult", "senior")
+
+  # rule_complete:
+  counts == 1 && sum(counts) == 6
+\end{verbatim}
+
+
+\newpage
+
+\subsubsection*{  Rule 15: Natural language}
+\begin{quote}
+
+
+If two records have the same postal code, they must have the same value for \code{city}. Below, this is expressed
+as a functional dependency (https://en.wikipedia.org/wiki/Functional\_dependency)
+
+\begin{verbatim}
+postal_code --> city
+\end{verbatim}
+
+
+
+\end{quote}
+\subsubsection*{The VTL implementation}
+\begin{verbatim}
+  DS=district-id(identifier),postcode(identifier),city(identifier)
+
+
+  DScount := DS[calc 1 as msr_count role "MEASURE"]
+  DSr := DScount[keep (postcode, msr_count)][aggregate count (msr_count)] =
+  DScount[keep (postcode, city, msr_count)][aggregate count (msr_count)][keep
+(postcode, msr_count)]
+\end{verbatim}
+\subsubsection*{The eStatistik implementation}
+\begin{verbatim}
+  VAR rueck, hf_city, counter
+  rueck, counter := {0,0}
+
+  FUER JEDES hf_city IN MATERIAL mat_Rule15 (postcode = postcode ; city )
+  WENN city /= hf_city
+  DANN rueck := 1
+  ENDE
+
+  ENDE
+  RUECKGABE rueck
+\end{verbatim}
+\subsubsection*{The validate implementation.}
+\begin{verbatim}
+  # rule_15:
+  postcode ~ city
+\end{verbatim}
+
+
+\newpage
+
+\subsubsection*{  Rule 16: Natural language}
+\begin{quote}
+
+
+The following is a check on hierarchical aggreggation.
+
+\begin{verbatim}
+forall k >= 1: w(x1. ... .xk) equals the sum of
+w(x1. ... .xk.i) forall i >= 0
+\end{verbatim}
+
+We assume all data is available.
+
+
+
+\end{quote}
+\subsubsection*{The VTL implementation}
+\begin{verbatim}
+  DS=id(identifier),level(identifier),weight
+
+  /*
+  * Create a hierarchy (actually is no possible to do using VTL because some
+string operators are missing)
+  *
+  * MAPS FROM MAPS TO LEVEL SIGN
+  * x1 1 +
+  * x1.1 x1 2 +
+  * x1.2 x1 2 +
+  * x1.3 x1 2 +
+  * x2 1 +
+  * x2.1 x2 2 +
+  */
+
+  DShierarchy := hierarchy(DS, level, "HRC", false)
+  DScond := (DShierarchy = DS)[filter weight = "false"]
+  DSr := DScond[calc 1 as "msrcount" role "MEASURE"][aggregate count(msrcount)] =
+0
+\end{verbatim}
+\subsubsection*{The eStatistik implementation}
+\begin{verbatim}
+  VAR rueck, hf_AnzSst, hf_such, hf_level, hf_sum, hf_weight, hit
+  rueck,hf_sum,hit := {0,0,0}
+
+  hf_AnzSst := FUNKTION WERTLAENGE (level)
+
+  WENN hf_AnzSst IN REIHE (1,3)
+  DANN
+
+  FUER JEDES hf_level, hf_weight IN MATERIAL mat_Rule16 (level, weight )
+
+  WENN hf_AnzSst = 1 UND FUNKTION WERTLAENGE (hf_level) = 3 UND
+  FUNKTION TEIL (hf_level,1,1) = FUNKTION TEIL (level,1,1)
+  DANN hf_sum:= hf_sum + hf_weight
+  hit := 1
+  ENDE
+
+  WENN hf_AnzSst = 3 UND FUNKTION WERTLAENGE (hf_level) = 5 UND
+  FUNKTION TEIL (hf_level,1,3) = FUNKTION TEIL (level,1,3)
+  DANN hf_sum:= hf_sum + hf_weight
+  hit := 1
+  ENDE
+
+  ENDE
+
+  "Fehlerermittlung"
+  WENN hf_sum /= weight UND hit = 1
+  DANN rueck := 1
+  ENDE
+
+  ENDE
+
+  RUECKGABE rueck
+\end{verbatim}
+\subsubsection*{The validate implementation.}
+\begin{verbatim}
+  # def_parent:
+  with_parent := sub("\\.?\\d+$", "", level)
+
+  # def_is_parent:
+  is_parent := level %in% with_parent
+
+  # def_par_lev:
+  parent_levels := level[is_parent]
+
+  # def_childsum:
+  childsum := tapply(weight, with_parent, sum)
+
+  # rule_16:
+  weight[is_parent] == childsum[parent_levels]
+\end{verbatim}
+
+
+\newpage
+
+\subsubsection*{  Rule 17: Natural language}
+\begin{quote}
+
+
+The value for no\_of\_household\_members must equal the number of records for each household
+
+
+\end{quote}
+\subsubsection*{The VTL implementation}
+\begin{verbatim}
+  DShousehold=household-id(identifier),members
+  DSpersons=person-id(identifier),household-id(identifier) (in the example fields
+are not correctly defined)
+
+  DScount := (DSpersons[calc 1 as "members" role "MEASURE"][keep (household-id,
+members)][aggregate count(members)]=
+  DShousehold)[filter members= "false"]
+  DSr := DScount[calc 1 as "msr_count" role "MEASURE"][aggregate count(msr_count)]
+= 0
+
+\end{verbatim}
+\subsubsection*{The eStatistik implementation}
+\begin{verbatim}
+  VAR rueck, hf_dummy, counter
+  rueck, counter := {0,0}
+
+  FUER JEDES hf_dummy IN MATERIAL personen (household_id = household_id ;
+person_id )
+  counter := counter + 1
+  ENDE
+
+  WENN counter /= members
+  DANN rueck := 1
+  ENDE
+
+  RUECKGABE rueck
+\end{verbatim}
+\subsubsection*{The validate implementation.}
+\begin{verbatim}
+  # def_count:
+  person_count := table(person$household_id)
+
+  # rule17:
+  members == person_count[household_id]
+\end{verbatim}
+
+
+\newpage
+
+\subsubsection*{  Rule 18: Natural language}
+\begin{quote}
+
+
+This last one is a bit complicated. It involves two files, one with households (\code{x}) and one with persons data (\code{y}). In the household file, it is registered how many members there are, say 3. It is then expected that
+there are persons with \code{person-id} 1,2,3 in the file \code{y}. The rule is satisfied if for all households, all person-id's can be found, and the id's have the correct values.
+
+
+\begin{verbatim}
+forall x: forall n:
+  IF 1 <= n <= x.no\emph{of}household\_members
+  THEN exists y: 
+    x.household-id = y.household-id AND y.person-id = n
+\end{verbatim}
+
+
+We assume all data is available.
+
+\end{quote}
+\subsubsection*{The VTL implementation}
+\begin{verbatim}
+  DShousehold=household-id(identifier),members
+  DSpersons=household-id(identifier), person-id(identifier)
+
+
+  DSmerge:=merge (DShousehold as "DSh", DSpersons as "DSp"
+  on DSh#household-id=DSp#household-id,
+  return
+  (DSh#household-id as household-id,DSh#person-id as person-id,DSp#members as
+members))
+
+
+  DSout:= DSmerge[filter person-id < 1 or person-id>members][keep (household-
+id,members)][aggregate count (members)] = 0
+
+  DSdist:= DSmerge[rename (person-id) as "p_id" role "measure"][aggregate
+count_distinct (p_id)][filter p id <> members]
+  [aggregate count (members)] = 0
+
+
+  DSr := (DSout and DSdist)
+
+\end{verbatim}
+\subsubsection*{The eStatistik implementation}
+\begin{verbatim}
+  VAR rueck, hf_person_id, x1
+  rueck := 0
+
+  WIEDERHOLE FUER x1 := 1 BIS x1 > members
+  WENN NICHT REIHE (household_id, x1) IN MATERIAL personen (household_id ,
+person_id )
+  DANN rueck := 1
+  ENDE
+
+  ENDE
+  "Anmerkung: "
+  "Fall Anz. der Personensätze > der HH-members wird in Rule_11 abgefangen"
+  "-> Daher keine Überprüfung mehr"
+
+  RUECKGABE rueck
+\end{verbatim}
+\subsubsection*{The validate implementation.}
+\begin{verbatim}
+  # def_max:
+  total_members := household$members[match(household_id, household$household_id)]
+
+  # rule18:
+  person_id >= 1 && person_id <= total_members
+\end{verbatim}
+

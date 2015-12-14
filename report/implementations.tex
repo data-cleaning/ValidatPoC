@@ -240,7 +240,16 @@ Files that serve as procedures have control in their file name, while all other 
 
 
 The data used in the PoC provide some cases in which validation cannot be performed due to missing data. Those cases are recognisable by the value \code{undecided} in the column \code{expected} or in the data set name (where the full data set is validated), respectively. The idea behind this is to find out how systems differ in handling missing values. In eSTATISTIK, after executing a validation rule, the associated data are always considered validated, because validation rules only return TRUE or FALSE. Any precondition that may lead to a validation rule not being executed must be checked outside the rule, that is, in a procedure.
-\code{Rule\_01} exemplifies this restriction. \code{Rule\_01.txt} contains the rule for validating the column  \code{hours\_worked} and is configured as a hard check (this configuration takes place in the rule editor). \code{Rule\_01.undecided.txt} only checks if \code{hours\_worked} is empty and represents a soft check. The procedure \code{Rule\_01\_control.txt} combines these checks, invoking \code{Rule\_01.txt} only if \code{Rule\_01.undecided.txt} returns FALSE, in which case \code{hours\_worked} is not empty. In this way, a soft error will be registered and displayed if the value is missing, and a hard error if a value is present but not within the valid range.
+\code{Rule\_01} exemplifies this restriction. \code{Rule\_01.txt} contains the
+rule for validating the column  \code{hours\_worked} and is configured as a
+hard check (this configuration takes place in the rule editor).
+\code{Rule\_01.undecided.txt} only checks if \code{hours\_worked} is empty and
+represents a soft check. The procedure \code{Rule\_01\_control.txt} combines
+these checks, invoking \code{Rule\_01.txt} only if
+\code{Rule\_01.undecided.txt} returns FALSE, in which case \code{hours\_worked}
+is not empty. In this way, a soft error will be registered and displayed if the
+value is missing, and a hard error if a value is present but not within the
+valid range.
 
 
 
