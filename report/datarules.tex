@@ -1,6 +1,7 @@
 \title{Data and Rules}
 \label{datarules}
 
+\section{Rules}
 The rule set for this proof of concept was chosen to on one hand reflect rules
 that are used in practice and on the other hand cover a wide range of rule
 types.  For this reason, two rules sets were combined. 
@@ -30,7 +31,19 @@ The second rule set was obtained by taking nine rules constructed for the study
 of VTL by \cite{gelsema:2015}. These rules were constructed to test the limits
 of what can be expressed by a language, and not necessarily for their
 usefulness. The difference between the rules is mainly based on what operators
-from first order logic are necessary to describe them.
+from first order logic are necessary to describe them. Operators include
+existance (there exists at least one$\ldots$), unique existence (there exists
+precisely one$\ldots$) and universal quantification (for all$\ldots$).
+Combinations of such operations are included as well.
+
+Together, these rule sets cover a wide range of cases that include a variety of
+in-cell, in-record, cross-record, and cross-dataset rules. An short overview of
+the rules ant their classifications is given in Table~\ref{tab:rules}.  In
+Appendix~\ref{sect:appendix} each rule is shown as presented to the
+\code{VTL}-programmer, together witht the implementations in \code{VTL},
+\code{eStatistik} and \code{validate}.
+
+
 
 
 \begin{table}[p]
@@ -101,4 +114,15 @@ must equal the number of records for each household}\\
 \caption{Overview of rules used in the proof of concept}
 \label{tab:rules}
 \end{table}
+
+\section{Data}
+To test the systems in practice, synthetic datasets were created for each rule.
+The sets have been designed to cover at least one case satisfying the rule, one
+case violating the rule, and one case where some data is missing.  In the
+latter case, one needs to make a choice. Either the system returns an
+`undefined' status, since the rule can not be fully evaluated, or the system
+returns one the two values `satisfied' or `violated'. The latter representing a
+more natural choice. For each rule a choice was made on how to handle missing
+cases so over the 18 rules two different options (`undifined' and `violated')
+were covered.
 
