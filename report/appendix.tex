@@ -1,3 +1,4 @@
+\textbf{Note regarding eSTATISTIK}: for improving accessibility to non-German readers, rules appear in an English version. The translation was limited to keywords, variable names and comments. The original version can be found on [GIT]. Also, in cases where rules where split over two or more files, corresponding remarks were made. for an explanation of why this may happen, please see chapter~\ref{implementations}.
 
 \subsubsection*{  Rule 1: Natural language}
 \begin{quote}
@@ -18,9 +19,29 @@ Missing data results in undecided.
   .
 \end{verbatim}
 \subsubsection*{The eStatistik implementation}
+
+Procedure \code{Rule\_01\_control.txt}:
+
 \begin{verbatim}
-  NICHT hours_worked IN REIHE (1 ++ 80)
+  IF CHECK Undecided = FALSE  
+    THEN CHECK Rule_01
+  END
 \end{verbatim}
+
+\noindent
+Rule \code{Rule\_01.txt}:
+
+\begin{verbatim}
+  NOT hours_worked IN SEQUENCE (1 ++ 80)
+\end{verbatim}
+
+\noindent
+Rule \code{Rule\_01\_undecided.txt}:
+
+\begin{verbatim}
+  hours_worked = EMPTY
+\end{verbatim}
+
 \subsubsection*{The validate implementation.}
 \begin{verbatim}
   # rule_01:
