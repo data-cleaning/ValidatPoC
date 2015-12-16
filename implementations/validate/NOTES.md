@@ -157,6 +157,8 @@ validate:
 - readability can be improved when self referencing is added: in that can a self
 join can easily be added
 
+- [mvdl] Rule needed debugging.
+
 ### rule 17
 
 VTL:
@@ -180,4 +182,6 @@ validate:
 
 - Used person file as the data set to be checked and the household file as the reference 
 data set. Makes use of R indexing (yeah!).
+
+- [mvdl] Rule needed debugging
 
