@@ -1,7 +1,10 @@
+\textbf{Note regarding eSTATISTIK}: for improving accessibility to non-German speaking readers, rules appear in an English version. The translation was limited to keywords, variable names and comments. The original version can be found on [GIT]. Also, in cases where rules where split over two or more files, the files and their respective semantic type (procedure or rule) are given. For an explanation of why splitting may happen, please see chapter~\ref{implementations}.
+\linebreak
+\linebreak
+\textbf{General note}: code snippets may be re-formatted to better fit the page boundaries.
 
 \subsubsection*{  Rule 1: Natural language}
 \begin{quote}
-
 
 Number of hours per week usually worked should be between 1 and 80
 
@@ -18,9 +21,29 @@ Missing data results in undecided.
   .
 \end{verbatim}
 \subsubsection*{The eStatistik implementation}
+
+Procedure \code{Rule\_01\_control.txt}:
+
 \begin{verbatim}
-  NICHT hours_worked IN REIHE (1 ++ 80)
+  IF CHECK Undecided = FALSE  
+    THEN CHECK Rule_01
+  END
 \end{verbatim}
+
+\noindent
+Rule \code{Rule\_01.txt}:
+
+\begin{verbatim}
+  NOT hours_worked IN SEQUENCE (1 ++ 80)
+\end{verbatim}
+
+\noindent
+Rule \code{Rule\_01\_undecided.txt}:
+
+\begin{verbatim}
+  hours_worked = EMPTY
+\end{verbatim}
+
 \subsubsection*{The validate implementation.}
 \begin{verbatim}
   # rule_01:
@@ -41,16 +64,27 @@ Missing data results in undecided
 
 
 \end{quote}
+
 \subsubsection*{The VTL implementation}
 \begin{verbatim}
   DS= business-id, cost, profit, turnover
 
   DSr:= (DS#cost + DS#profit) = DS#turnover
 \end{verbatim}
+
 \subsubsection*{The eStatistik implementation}
+\noindent
+Procedure \code{Rule\_02\_control.txt}:
+\begin{verbatim}
+  IF cost /= EMPTY AND profit /= EMPTY 
+    THEN CHECK Rule_02
+  END
+\end{verbatim}
+Rule \code{Rule\_02.txt}:
 \begin{verbatim}
   turnover /= cost + profit
 \end{verbatim}
+
 \subsubsection*{The validate implementation.}
 \begin{verbatim}
   # rule_02:
@@ -70,6 +104,7 @@ Missing values are ignored when determining the relative occurrences.
 
 
 \end{quote}
+
 \subsubsection*{The VTL implementation}
 \begin{verbatim}
   DS=level
@@ -79,23 +114,28 @@ Missing values are ignored when determining the relative occurrences.
   DSr:= DScalc[filter level="high"][aggregate count(msrcount)]<=(( DScalc
 [aggregate count (msrcount)])*0.1)
 \end{verbatim}
+
 \subsubsection*{The eStatistik implementation}
+\noindent
+Rule \code{Rule\_03.txt}:
 \begin{verbatim}
-  VAR rueck, s1 , z1 , total
-  rueck,z1,total := {0,0,0}
+  DECLARE rc, s1  , z1 , total
+  rc,z1,total := {0,0,0}
 
-  FUER JEDES s1 IN MATERIAL mat_Rule03 (level1)
+  FOR EVERY s1  IN DATASET mat_Rule03 (level1)
 
-  WENN s1 /= 'NA' DANN total := total + 1 ENDE "Gesamtsätze ohne LEER Werte (NA)"
-  WENN s1 = 'high' DANN z1 := z1 + 1 ENDE "Anz. high "
+    IF s1 /= 'NA' THEN  total := total + 1 END "count records that contain any valid value "
+     IF s1  = 'high' THEN z1 := z1 + 1   END    "count records that contain value "high"
 
-  ENDE
+  END
 
-  "Auswertung"
-  WENN z1 > total * 0.1 DANN rueck := 1 ENDE
+  "Check relative occurrence of value 'high'"
 
-  RUECKGABE rueck
+  IF z1 > total * 0.1 THEN rc := 1 END
+
+  RETURN rc
 \end{verbatim}
+
 \subsubsection*{The validate implementation.}
 \begin{verbatim}
   # def_03:
@@ -131,12 +171,11 @@ indicated in 3VL, Three-valued logic see page 42 VTL-part1 */
 \end{verbatim}
 \subsubsection*{The eStatistik implementation}
 \begin{verbatim}
-  (price_t = LEER ODER price_t_1 = LEER ODER price_Y_1 = LEER)
-  ODER
-  FUNKTION ABSOLUTWERT (price_t - price_t_1) > price_t_1 * 0.5
-  ODER
-  FUNKTION ABSOLUTWERT (price_t - price_Y_1) > price_Y_1 * 0.5
-\end{verbatim}
+  (price_t = EMPTY OR price_t_1 = EMPTY OR price_Y_1 = EMPTY)
+  OR
+  FUNCTION ABSOLUTEVALUE (price_t - price_t_1)  > price_t_1 * 0.5
+  OR
+  FUNCTION ABSOLUTEVALUE (price_t - price_Y_1)  > price_Y_1 * 0.5\end{verbatim}
 \subsubsection*{The validate implementation.}
 \begin{verbatim}
   # rule_04:
@@ -173,19 +212,28 @@ DSgc#grandchild_of as "grandchild_of")
 
 \end{verbatim}
 \subsubsection*{The eStatistik implementation}
+\noindent
+Procedure \code{Rule\_05\_control.txt}:
 \begin{verbatim}
-  VAR rueck, hf_age
-  hf_age := LEER
-
-  hf_age := MATERIAL mat_Rule05lb (person_id = grandchild_of ; age)
-
-  WENN hf_age - 28 < age
-  DANN rueck := 1
-  ENDE
-
-
-  RUECKGABE rueck
+  IF grandchild_of /= EMPTY AND age /= EMPTY
+    THEN CHECK Rule_05
+  END
 \end{verbatim}
+\noindent
+Rule \code{Rule\_05.txt}:
+\begin{verbatim}
+  DECLARE rc, tmp_age
+  tmp_age := EMPTY
+
+  tmp_age := DATASET mat_Rule05lb (person_id = grandchild_of ; age)
+
+  IF tmp_age - 28 < age
+    THEN rc := 1
+  END
+
+  RETURN rc
+\end{verbatim}
+
 \subsubsection*{The validate implementation.}
 \begin{verbatim}
   # def_age_gp:
@@ -220,16 +268,25 @@ DSout#quantity_t-1)
 indicated in 3VL, Three-valued logic
   see page 42 VTL-part1 */
 \end{verbatim}
+
 \subsubsection*{The eStatistik implementation}
 \begin{verbatim}
   season = 'out' UND (price_t /= price_t_1 ODER quantity_t /= quantity_t_1)
 \end{verbatim}
+
 \subsubsection*{The validate implementation.}
+\noindent
+Procedure \code{Rule\_06\_control.txt}:
 \begin{verbatim}
-  # rule_06:
-  if (season == "out") price_t == price_tmin1 && quantity_t ==
-  quantity_tmin1
+  IF price_t /= EMPTY AND price_t_1 /= EMPTY  AND  quantity_t /= EMPTY   AND quantity_t_1  /= EMPTY 
+    THEN CHECK Rule_06
+  END
 \end{verbatim}
+\noindent
+Rule \code{Rule\_06.txt}:
+\begin{verbatim}
+  season = 'out' AND (price_t /= price_t_1 OR quantity_t /= quantity_t_1)
+  \end{verbatim}
 
 
 \newpage
@@ -264,38 +321,40 @@ DSmt_1)) between 0.9 and 1.1
 \end{verbatim}
 \subsubsection*{The eStatistik implementation}
 \begin{verbatim}
-  VAR rueck, d_t, d_tm1, s_t, s_tm1, d_t_neu, t, tm1, counter, DSr
-  rueck, d_t, d_tm1, s_t, s_tm1, d_t_neu, counter := {0,0,0,0,0,0,0}
+  DECLARE rc, d_t, d_tm1, s_t, s_tm1, d_t_neu, t, tm1, counter,  DSr
+  rc, d_t, d_tm1, s_t, s_tm1, d_t_neu, counter  := {0,0,0,0,0,0,0}
 
-  "Summenbildung SP2 und SP3 über alle Sätze "
-  FUER JEDES t, tm1 IN MATERIAL mat_Rule07lb (price_t, price_tm1)
-  counter := counter + 1
-  s_t := s_t + t
-  s_tm1 := s_tm1 + tm1
+"Count totals SP2 and SP3 across all records"
+  FOR EVERY  t, tm1 IN DATASET mat_Rule07lb (price_t, price_tm1)
+          counter := counter + 1
+          s_t   := s_t + t
+          s_tm1 := s_tm1 + tm1
 
-  ENDE
+  END
 
-  "Berechnung:"
-  WENN counter > 0
+  "Evaluate result"
 
-  DANN
-  "Durchschnittberechnung"
-  d_t := s_t / counter
-  d_tm1 := s_tm1 / counter
-  "Neuer Durchschnittswert"
-  d_t_neu := (s_t - price_t + price_tm1) / counter
+  IF counter > 0
 
-  "Formel"
-  DSr := FUNKTION ABSOLUTWERT(d_t - d_tm1) / FUNKTION ABSOLUTWERT(d_t_neu - d_tm1)
+    THEN 
+      "Compute previous average"
+      d_t       := s_t   / counter
+      d_tm1     := s_tm1 / counter
+	
+      "Compute new average"
+      d_t_neu := (s_t - price_t + price_tm1) / counter
 
+      "Compute relative size of new average"
+      DSr :=  FUNCTION ABSOLUTEVALUE(d_t - d_tm1) / FUNCTION ABSOLUTEVALUE(d_t_neu - d_tm1)
 
-  WENN NICHT DSr IN REIHE (0.9 ++ 1.1)
-  DANN rueck := 1
-  ENDE
+      "Check"
+      IF NOT DSr IN SEQUENCE  (0.9 ++ 1.1)
+        THEN rc := 1
+      END
 
-  ENDE
-
-  RUECKGABE rueck
+  END 
+ 
+  RETURN rc
 \end{verbatim}
 \subsubsection*{The validate implementation.}
 \begin{verbatim}
@@ -330,17 +389,29 @@ Results are reported per person.
   DSr:= DS_h#year_of_birth=DS_p#year_of_birth
 \end{verbatim}
 \subsubsection*{The eStatistik implementation}
+\noindent
+Procedure \code{Rule\_08\_control.txt}:
 \begin{verbatim}
-  VAR rueck
-  rueck := 0
-
-  WENN NICHT REIHE (person_id , person , year_of_birth)
-  IN MATERIAL Haushalt (person_id , person , year_of_birth)
-  DANN rueck := 1
-  ENDE
-
-  RUECKGABE rueck
+  IF year_of_birth /= EMPTY
+    THEN CHECK Rule_08
+  END
 \end{verbatim}
+\noindent
+Rule \code{Rule\_08.txt}:
+\begin{verbatim}
+  DECLARE rc
+  rc := 0
+
+  "Haushalt = household"
+
+  IF NOT  SEQUENCE (person_id , person , year_of_birth) 
+    IN DATASET Haushalt (person_id , person , year_of_birth)
+    THEN rc := 1
+  END
+
+  RETURN rc
+\end{verbatim}
+
 \subsubsection*{The validate implementation.}
 \begin{verbatim}
   # rule_08:
@@ -377,26 +448,26 @@ Missing values result in undecided.
 \end{verbatim}
 \subsubsection*{The eStatistik implementation}
 \begin{verbatim}
-  VAR hf_age, rueck, hf_decided, hf_invalid
-  rueck,hf_decided, hf_invalid := {0,0,0}
-  hf_age := LEER
-  FUER JEDES hf_age IN MATERIAL mat_Rule09 (age)
+  DECLARE tmp_age, rc, tmp_decided, tmp_invalid
+    rc,tmp_decided, tmp_invalid := {0,0,0}
+  tmp_age := EMPTY
+  FOR EVERY tmp_age IN DATASET mat_Rule09 (age)
 
-  WENN hf_age = LEER
-  DANN hf_decided := 1
+    IF tmp_age  = EMPTY 
+      THEN
+        tmp_decided := 1 
+    ELSE
+      IF NOT tmp_age  IN SEQUENCE (0++113)
+        THEN tmp_invalid := 1  
+      END
+    END
+  END
 
-  SONST
-  WENN NICHT hf_age IN REIHE (0++113)
-  DANN hf_invalid := 1
-  ENDE
-  ENDE
-  ENDE
+  IF tmp_decided = 0 AND  tmp_invalid = 1
+    THEN rc := 1
+  END
 
-  WENN hf_decided = 0 UND hf_invalid = 1
-  DANN rueck := 1
-  ENDE
-
-  RUECKGABE rueck
+  RETURN rc
 \end{verbatim}
 \subsubsection*{The validate implementation.}
 \begin{verbatim}
@@ -427,20 +498,20 @@ We assume all data is available.
 \end{verbatim}
 \subsubsection*{The eStatistik implementation}
 \begin{verbatim}
-  VAR rueck, hf_turnover
-  rueck := 1
-  hf_turnover := LEER
+  DECLARE rc, tmp_turnover 
+  rc := 1
+  tmp_turnover := EMPTY
 
-  FUER JEDES hf_turnover IN MATERIAL mat_Rule10 (business_id = '100' ; turnover )
+  FOR EVERY tmp_turnover IN DATASET mat_Rule10 (business_id = '100' ; turnover )
 
 
-  WENN hf_turnover /= LEER UND hf_turnover > 1000000
-  DANN rueck := 0
-  ENDE
+    IF tmp_turnover /= EMPTY AND tmp_turnover > 1000000
+      THEN rc := 0
+    END
 
-  ENDE
+  END
 
-  RUECKGABE rueck
+  RETURN rc
 \end{verbatim}
 \subsubsection*{The validate implementation.}
 \begin{verbatim}
@@ -475,29 +546,27 @@ A missing value resuls in undecided, except when the truth value can be determin
 \end{verbatim}
 \subsubsection*{The eStatistik implementation}
 \begin{verbatim}
-  VAR rueck, hf_turnover, hf_undecided, hf_count
-  rueck,hf_undecided, hf_count := {1,0,0}
-  hf_turnover := LEER
+  DECLARE rc, tmp_turnover, tmp_undecided, tmp_count
+  rc,tmp_undecided, tmp_count := {1,0,0}
+  tmp_turnover := EMPTY
 
-  FUER JEDES hf_turnover IN MATERIAL mat_Rule11 (business_id = '100' ; turnover )
+  FOR EVERY tmp_turnover IN DATASET mat_Rule11 (business_id = '100' ; turnover )
 
-  WENN hf_turnover = LEER
-  DANN hf_undecided := 1
+  IF tmp_turnover  = EMPTY 
+    THEN
+      tmp_undecided := 1 
+    ELSE
+      IF tmp_turnover > 1000000
+        THEN tmp_count :=  tmp_count + 1  
+      END
+    END
+  END
 
-  SONST
-  WENN hf_turnover > 1000000
-  DANN hf_count := hf_count + 1
-  ENDE
-  ENDE
-  ENDE
-
-  WENN hf_undecided = 1 ODER hf_count = 1
-  DANN rueck := 0
-  ENDE
-
-
-
-  RUECKGABE rueck
+   IF tmp_undecided = 1 OR  tmp_count = 1
+    THEN rc := 0
+  END
+ 
+  RETURN rc
 \end{verbatim}
 \subsubsection*{The validate implementation.}
 \begin{verbatim}
@@ -542,25 +611,27 @@ DSx#relation_to_head = 4)
 \end{verbatim}
 \subsubsection*{The eStatistik implementation}
 \begin{verbatim}
-  VAR rueck,hf_relation_to_head
-  rueck := {0}
-  hf_relation_to_head := LEER
+  DECLARE rc,tmp_relation_to_head
+  rc := {0}
+  tmp_relation_to_head := EMPTY
 
-  WENN relation_to_head ='4'
-  DANN
+  IF relation_to_head ='4'
+  THEN   
 
-  WENN NICHT spouse_id IN MATERIAL mat_Rule12 (person_id)
-  DANN rueck := 1
-  SONST hf_relation_to_head := MATERIAL mat_Rule12 (person_id = spouse_id ;
-relation_to_head )
+    IF NOT spouse_id IN DATASET mat_Rule12 (person_id)
+      THEN
+        rc := 1
+      ELSE
+        tmp_relation_to_head :=  DATASET mat_Rule12 (person_id = spouse_id ; relation_to_head )
 
-  WENN hf_relation_to_head /= '3'
-  DANN rueck := 1
-  ENDE
-  ENDE
+        IF tmp_relation_to_head /= '3'
+          THEN  rc := 1
+        END
+    END
 
-  ENDE
-  RUECKGABE rueck
+  END
+  
+  RETURN rc
 \end{verbatim}
 \subsubsection*{The validate implementation.}
 \begin{verbatim}
@@ -605,20 +676,17 @@ We assume all data is available.
 \end{verbatim}
 \subsubsection*{The eStatistik implementation}
 \begin{verbatim}
-  VAR rueck, dummy, counter
-  rueck, counter := {0,0}
+  DECLARE rc, dummy, counter
+  rc, counter  := {0,0}
 
-  FUER JEDES dummy IN MATERIAL mat_Rule13 (gender = gender, age_group =
-age_group ; person_id )
-  counter := counter + 1
+  FOR EVERY dummy IN DATASET mat_Rule13 (gender = gender, age_group = age_group  ; person_id )
+    counter := counter + 1
+    IF counter /= 1
+     THEN rc := 1
+    END
 
-
-  WENN counter /= 1
-  DANN rueck := 1
-  ENDE
-
-  ENDE
-  RUECKGABE rueck
+  END
+  RETURN rc
 \end{verbatim}
 \subsubsection*{The validate implementation.}
 \begin{verbatim}
@@ -665,34 +733,36 @@ We assume all data is available.
 \end{verbatim}
 \subsubsection*{The eStatistik implementation}
 \begin{verbatim}
-  VAR rueck, hf_age_group, hf_gender,
-  male_child, female_child, male_adult, female_adult, male_senior, female_senior
-  rueck,male_child,
-female_child,male_adult,female_adult,male_senior,female_senior :=
-{0,0,0,0,0,0,0}
+  DECLARE rc, tmp_age_group, tmp_gender, male_child, female_child, male_adult, female_adult, male_senior, female_senior
+  rc,male_child, female_child,male_adult,female_adult,male_senior,female_senior  := {0,0,0,0,0,0,0}
 
-  FUER JEDES hf_gender , hf_age_group IN MATERIAL mat_Rule14 (gender , age_group)
-  WENN hf_gender = 'male' UND hf_age_group = 'child' DANN male_child := male_child
-+ 1 ENDE
-  WENN hf_gender = 'female' UND hf_age_group = 'child' DANN female_child :=
-female_child + 1 ENDE
-  WENN hf_gender = 'male' UND hf_age_group = 'adult' DANN male_adult := male_adult
-+ 1 ENDE
-  WENN hf_gender = 'female' UND hf_age_group = 'adult' DANN female_adult :=
-female_adult + 1 ENDE
-  WENN hf_gender = 'male' UND hf_age_group = 'senior' DANN male_senior :=
-male_senior + 1 ENDE
-  WENN hf_gender = 'female' UND hf_age_group = 'senior' DANN female_senior :=
-female_senior + 1 ENDE
+  FOR EVERY tmp_gender , tmp_age_group IN DATASET mat_Rule14 (gender , age_group)
+    IF tmp_gender = 'male'   AND tmp_age_group = 'child'
+      THEN male_child    := male_child    + 1
+    END
+    IF tmp_gender = 'female' AND tmp_age_group = 'child'   
+      THEN female_child  := female_child  + 1
+    END
+    IF tmp_gender = 'male'   AND tmp_age_group = 'adult'  
+      THEN male_adult    := male_adult    + 1
+    END
+    IF tmp_gender = 'female' AND tmp_age_group = 'adult'  
+      THEN female_adult  := female_adult  + 1
+    END
+    IF tmp_gender = 'male'   AND tmp_age_group = 'senior' 
+      THEN male_senior   := male_senior   + 1
+    END
+    IF tmp_gender = 'female' AND tmp_age_group = 'senior' 
+      THEN female_senior := female_senior + 1
+    END
 
-  ENDE
-  WENN male_child = 0 ODER female_child = 0 ODER male_adult = 0 ODER female_adult
-= 0 ODER male_senior = 0 ODER female_senior = 0
-  DANN rueck := 1
-  ENDE
+  END
+  
+  IF male_child = 0 OR female_child = 0 OR male_adult = 0 OR female_adult = 0 OR male_senior = 0 OR female_senior = 0 
+    THEN rc := 1
+  END
 
-
-  RUECKGABE rueck
+  RETURN rc
 \end{verbatim}
 \subsubsection*{The validate implementation.}
 \begin{verbatim}
@@ -737,18 +807,28 @@ postal_code --> city
 (postcode, msr_count)]
 \end{verbatim}
 \subsubsection*{The eStatistik implementation}
+\noindent
+Procedure \code{Rule\_15\_control.txt}:
 \begin{verbatim}
-  VAR rueck, hf_city, counter
-  rueck, counter := {0,0}
-
-  FUER JEDES hf_city IN MATERIAL mat_Rule15 (postcode = postcode ; city )
-  WENN city /= hf_city
-  DANN rueck := 1
-  ENDE
-
-  ENDE
-  RUECKGABE rueck
+  IF postcode /= EMPTY
+    THEN CHECK Rule_15
+  END
 \end{verbatim}
+\noindent
+Rule \code{Rule\_15.txt}:
+\begin{verbatim}
+  DECLARE rc, tmp_city, counter
+  rc, counter  := {0,0}
+
+  FOR EVERY tmp_city IN DATASET mat_Rule15 (postcode = postcode ; city )
+    IF city /= tmp_city
+      THEN rc := 1
+    END
+  END
+  
+  RETURN rc
+\end{verbatim}
+
 \subsubsection*{The validate implementation.}
 \begin{verbatim}
   # rule_15:
@@ -798,38 +878,37 @@ string operators are missing)
 \end{verbatim}
 \subsubsection*{The eStatistik implementation}
 \begin{verbatim}
-  VAR rueck, hf_AnzSst, hf_such, hf_level, hf_sum, hf_weight, hit
-  rueck,hf_sum,hit := {0,0,0}
+  DECLARE rc, tmp_AnzSst, tmp_such, tmp_level, tmp_sum, tmp_weight, hit
+  rc,tmp_sum,hit  := {0,0,0}
 
-  hf_AnzSst := FUNKTION WERTLAENGE (level)
+  tmp_AnzSst := FUNCTION LENGTH (level)
 
-  WENN hf_AnzSst IN REIHE (1,3)
-  DANN
+  IF tmp_AnzSst IN SEQUENCE  (1,3)
+    THEN 
+      FOR EVERY tmp_level, tmp_weight IN DATASET mat_Rule16 (level, weight )
 
-  FUER JEDES hf_level, hf_weight IN MATERIAL mat_Rule16 (level, weight )
+        IF tmp_AnzSst = 1 AND FUNCTION LENGTH (tmp_level) = 3 AND FUNCTION PART (tmp_level,1,1) = FUNCTION PART (level,1,1) 
+          THEN
+            tmp_sum:= tmp_sum + tmp_weight  
+            hit := 1
+        END
 
-  WENN hf_AnzSst = 1 UND FUNKTION WERTLAENGE (hf_level) = 3 UND
-  FUNKTION TEIL (hf_level,1,1) = FUNKTION TEIL (level,1,1)
-  DANN hf_sum:= hf_sum + hf_weight
-  hit := 1
-  ENDE
+        IF tmp_AnzSst = 3 AND FUNCTION LENGTH (tmp_level) = 5 AND FUNCTION PART (tmp_level,1,3) = FUNCTION PART (level,1,3) 
+          THEN
+            tmp_sum:= tmp_sum + tmp_weight  
+            hit := 1
+        END
 
-  WENN hf_AnzSst = 3 UND FUNKTION WERTLAENGE (hf_level) = 5 UND
-  FUNKTION TEIL (hf_level,1,3) = FUNKTION TEIL (level,1,3)
-  DANN hf_sum:= hf_sum + hf_weight
-  hit := 1
-  ENDE
+    END
 
-  ENDE
+    "Check"
+    IF tmp_sum /= weight AND hit = 1
+      THEN rc := 1
+    END
 
-  "Fehlerermittlung"
-  WENN hf_sum /= weight UND hit = 1
-  DANN rueck := 1
-  ENDE
+  END
 
-  ENDE
-
-  RUECKGABE rueck
+  RETURN rc
 \end{verbatim}
 \subsubsection*{The validate implementation.}
 \begin{verbatim}
@@ -874,30 +953,29 @@ members)][aggregate count(members)]=
 
 \end{verbatim}
 \subsubsection*{The eStatistik implementation}
+\noindent
+Procedure \code{Rule\_17\_control.txt}:
 \begin{verbatim}
-  VAR rueck, hf_dummy, counter
-  rueck, counter := {0,0}
-
-  FUER JEDES hf_dummy IN MATERIAL personen (household_id = household_id ;
-person_id )
-  counter := counter + 1
-  ENDE
-
-  WENN counter /= members
-  DANN rueck := 1
-  ENDE
-
-  RUECKGABE rueck
+  IF members /= EMPTY
+    THEN CHECK Rule_17
+  END
 \end{verbatim}
-\subsubsection*{The validate implementation.}
+\noindent
+Rule \code{Rule\_17.txt}:
 \begin{verbatim}
-  # def_count:
-  person_count := table(person$household_id)
+  DECLARE rc, tmp_dummy, counter
+  rc, counter  := {0,0}
 
-  # rule17:
-  members == person_count[household_id]
+  FOR EVERY tmp_dummy IN DATASET personen (household_id = household_id ; person_id )
+    counter := counter + 1
+  END
+
+  IF counter /= members
+    THEN rc := 1
+  END
+
+  RETURN rc
 \end{verbatim}
-
 
 \newpage
 
@@ -944,24 +1022,30 @@ count_distinct (p_id)][filter p id <> members]
   DSr := (DSout and DSdist)
 
 \end{verbatim}
+
 \subsubsection*{The eStatistik implementation}
+\noindent
+Procedure \code{Rule\_18\_control.txt}:
 \begin{verbatim}
-  VAR rueck, hf_person_id, x1
-  rueck := 0
-
-  WIEDERHOLE FUER x1 := 1 BIS x1 > members
-  WENN NICHT REIHE (household_id, x1) IN MATERIAL personen (household_id ,
-person_id )
-  DANN rueck := 1
-  ENDE
-
-  ENDE
-  "Anmerkung: "
-  "Fall Anz. der Personensätze > der HH-members wird in Rule_11 abgefangen"
-  "-> Daher keine Überprüfung mehr"
-
-  RUECKGABE rueck
+  IF members /= EMPTY
+    THEN CHECK Rule_18
+  END
 \end{verbatim}
+\noindent
+Rule \code{Rule\_18.txt}:
+\begin{verbatim}
+  DECLARE rc, tmp_person_id, x1
+  rc := 0
+
+  LOOP FOR x1 := 1 UNTIL x1 > members
+    IF NOT SEQUENCE (household_id, x1) IN DATASET personen (household_id , person_id )
+      THEN rc := 1
+    END
+  END
+
+  RETURN rc
+\end{verbatim}
+
 \subsubsection*{The validate implementation.}
 \begin{verbatim}
   # def_max:
