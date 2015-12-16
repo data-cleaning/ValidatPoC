@@ -1,4 +1,4 @@
-\textbf{Note regarding eSTATISTIK}: for improving accessibility to non-German speaking readers, rules appear in an English version. The translation was limited to keywords, variable names and comments. The original version can be found on [GIT]. Also, in cases where rules where split over two or more files, the files and their respective semantic type (procedure or rule) are given. For an explanation of why splitting may happen, please see chapter~\ref{implementations}.
+\textbf{Note regarding eSTATISTIK}: for improving accessibility to non-German speaking readers, rules appear in an English version. The translation was limited to keywords, variable names and comments. The original version can be found on [GIT]. Also, in cases where the logic of a rule was split over two or more files, the files and their respective programmatic type (procedure or rule) are given. For an explanation of why such splitting may happen, please see chapter~\ref{implementations}.
 \linebreak
 \linebreak
 \textbf{General note}: code snippets may be re-formatted to better fit the page boundaries.
@@ -22,6 +22,9 @@ Missing data results in undecided.
 \end{verbatim}
 \subsubsection*{The eStatistik implementation}
 
+\code{Rule\_01.txt} contains the rule for validating the column  \code{hours\_worked} and is configured as a hard check (this configuration takes place in the rule editor). \code{Rule\_01.undecided.txt} only checks if \code{hours\_worked} is empty and represents a soft check. The procedure \code{Rule\_01\_control.txt} combines these checks, invoking \code{Rule\_01.txt} only if \code{Rule\_01.undecided.txt} returns FALSE, in which case \code{hours\_worked} is not empty. In this way, a soft error will be registered and displayed if the value is missing, and a hard error if a value is present but not within the valid range.
+\linebreak
+\linebreak
 Procedure \code{Rule\_01\_control.txt}:
 
 \begin{verbatim}
