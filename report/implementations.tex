@@ -7,7 +7,54 @@ This chapter presents the various implementations of the data validaion rules de
 
 \section{VTL}
 
-VTL
+\textsc{Laura Vignola}
+\vspace{0.6 cm}
+
+VTL is a standard language for defining validation and transformation rules. It was launched at the end of 2012 by the SDMX Secretariat and on February 2015, the version 1.0 of VTL has been released as a package containing: a document with the main characteristics of VTL (VTL part 1); a document with the full library of operators (VTL part 2) and the VTL technical notation (Extended Backus-Naur Form notation). Figure~\ref{vtldatamod} shows the data model of VTL:
+
+\begin{figure}[!ht]
+\begin{center}
+\includegraphics[scale=0.5]{fig/vtldatamod.png} 
+\end{center}
+\caption{ER diagramm of the VTL data model}
+\label{vtldatamod}
+\end{figure}
+
+The general characteristics of VTL are to:
+\begin{itemize}
+\item
+Be user oriented: to be used by also non IT people and to be oriented to statistics, to be intuitive and friendly.
+
+\item
+Have an integrated approach: to be independent of statistical domain,  statistical process phase and typologies of data (micro and macro, registers data, survey data etc.). To be independent from the standard: the VTL Information model can be mapped with those of different standards like SDMX, GSIM and DDI.
+
+\item
+Have an active role for processing, driving in an active way the execution of the calculation.
+
+\item
+To be independent from the IT implementation, allowing implementations with different programming languages.
+
+\end{itemize}
+
+VTL defines a set of operators that can be applied to dataset or constant or both. A VTL dataset can be considered as a logical table based on a Data Structure having independent variables (identifiers) and dependent variables (measures, attributes). This is the reason why, when we use VTL with datasets (like in the PoC examples) , it is necessary to define the Data Structures related to the dataset, specifying  the components representing your data and which of them are identifiers or measures or attributes.
+
+A VTL expression transforms one or more datasets (or constants) in an output dataset (or constant) that can also be the input of a subsequent transformation.
+The translations provided in the PoC are based on the following VTL constraints:
+
+\begin{itemize}
+
+\item
+A dataset must always have at least an identifier so that is not possible aggregate data having as result  a unique constant value.
+
+\item
+Some operators work on the match of the name of measures  and type. In particular when they act on the whole datasets. For example the sum of two datasets can be performed only if they have the same measures in name and type.
+
+\item
+VTL manages the output in different way: when the operators act on the same measure, the measure itself is overwritten with the result, in case of boolean operators it creates a specific component (“CONDITION”) and it allows the creation of new components through the “calc” operator.
+
+\end{itemize}
+
+In the next future a new version of VTL will be released taking into account the results and comments of the PoC experience.
 
 \section{Validate}
 
