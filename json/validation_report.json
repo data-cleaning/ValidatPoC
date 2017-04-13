@@ -1,12 +1,16 @@
 {
   "id"     : "https://github.com/data-cleaning/ValidatPoC/json/validation_report.json",
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "type"   : "object", 
-    "properties" : {
-      "event"      : {},
-      "rule"       : {},
-      "data"       : {},
-      "aggregator" : {"type" : ["string" ,"null"]},
-      "value"      : {"type" : ["numeric","null"]}
-  }
+  "type"   : "array",
+    "items" : {
+      "type"   : "object", 
+        "properties" : {
+          "event"      : {"type" : ["string" ,"null"]},
+          "rule"       : {"type" : ["string" ,"null"]},
+          "data"       : {"type" : ["string" ,"null"]},
+          "aggregator" : {"type" : ["string" ,"null"]},
+          "value"      : {"type" : ["numeric","null"]}
+        }
+      }
 }
+
