@@ -1,0 +1,5 @@
+DS := get("rules.validat_poc_03")
+
+DScalc:= DS[calc 1 as "msrcount" role MEASURE] 
+
+DSr := check( count(DS[filter level = "high"]) <= count(DS) * 0.1 , all, errorcode("Error, rule PoC 3"), errorlevel("Error"))

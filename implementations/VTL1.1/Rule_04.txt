@@ -1,0 +1,5 @@
+/* if a NULL value is in one of the terms of the AND the result will be as indicated in 3VL, Three-valued logic  see page 42 VTL-part1 */
+
+DS := get("rules.validat_poc_04")
+
+DSr1 := check((DS.price_t - DS.price_t_1 <= (DS.price_t_1 * 0.5 )) and (DS.price_t + DS.price_Y_1 <= DS.price_Y_1 * 0.5), all, errorcode("Error, rule PoC 4"), errorlevel("Error"))

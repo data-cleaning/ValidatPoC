@@ -1,0 +1,3 @@
+DS := get("rules.validat_poc_11")
+DScond := DS[filter  business_id=100 and turnover>1000000]  
+DSr := check(count(DScond) = 1, all, errorcode("Error, rule PoC 11"), errorlevel("Error"))

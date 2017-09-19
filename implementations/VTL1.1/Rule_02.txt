@@ -1,0 +1,5 @@
+/*DS= business-id, cost, profit, turnover  */
+
+DS := get("rules.validat_poc_02")
+
+DSr := check( (DS.cost + DS.profit) = DS.turnover , all, errorcode("Error, rule PoC 2"), errorlevel("Error"))

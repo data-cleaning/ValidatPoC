@@ -1,0 +1,8 @@
+DS      := get("rules.validat_poc_07")
+mt      := avg(DS.price_t)
+mt1     := avg(DS.price_mt1) 
+DScount := count(DS.price_t)
+dtt1    := abs(mt - mt1)
+mti     := (sum(DS.price_t)-DS.price_t+DS.price_mt1) / DScount
+dtt1i   := abs(mti-mt1)
+DSr     := check(abs(dtt1i/dtt1) between 0.9 and 1.1, all, errorcode("Error, rule PoC 7"), errorlevel("Error"))

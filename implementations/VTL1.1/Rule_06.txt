@@ -1,0 +1,7 @@
+/* if a NULL value is in one of the terms of the AND the result will be as indicated in 3VL, Three-valued logic  see page 42 VTL-part1 */
+
+DS := get("rules.validat_poc_06")
+
+DSout := DS[filter season = "out"]
+
+DSr := check((DSout.price_t = DSout.price_t_1) and (DSout.quantity_t = DSout.quantity_t_1), all, errorcode("Error, rule PoC 6"), errorlevel("Error"))

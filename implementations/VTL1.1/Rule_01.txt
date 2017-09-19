@@ -1,0 +1,6 @@
+/* In case a value in hours_worked is NULL the value returned will be NULL */
+
+
+DS := get("rules.validat_poc_01")
+
+DSr := check(DS.hours_worked between 1 and 80, all, errorcode("Error, rule PoC 1"), errorlevel("Error"))

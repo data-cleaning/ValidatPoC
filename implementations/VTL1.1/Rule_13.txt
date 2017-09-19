@@ -1,0 +1,3 @@
+DS      := get("rules.validat_poc_13")
+DScount := count(DS[calc 1 as "msrcount" role MEASURE].msrcount) group by (gender, age_group)
+DSr     := check(DScount = 1, all, errorcode("Error, rule PoC 13"), errorlevel("Error"))
